@@ -2,7 +2,12 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
-        <RootNamespace>PDS.Core</RootNamespace>
+        <RootNamespace>PDS.Implementation</RootNamespace>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\PDS\PDS.csproj" />
+    </ItemGroup>
 
 </Project>
