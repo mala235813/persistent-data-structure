@@ -9,6 +9,8 @@ namespace PDS.Collections
         TSelf AddRange(IEnumerable<T> items);
         
         TSelf Clear();
+        
+//        static TSelf Empty { get; } 
     }
 
     public interface ITransactional<out TSelf>

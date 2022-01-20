@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PDS.Implementation", "PDS.I
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PDS", "PDS\PDS.csproj", "{B708CF70-A6C4-493C-A611-155C2B0C62A0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PDS.Tests", "PDS.Tests\PDS.Tests.csproj", "{563534A3-84EA-4FE5-BF97-232A73134EB1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{B708CF70-A6C4-493C-A611-155C2B0C62A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B708CF70-A6C4-493C-A611-155C2B0C62A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B708CF70-A6C4-493C-A611-155C2B0C62A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{563534A3-84EA-4FE5-BF97-232A73134EB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{563534A3-84EA-4FE5-BF97-232A73134EB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{563534A3-84EA-4FE5-BF97-232A73134EB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{563534A3-84EA-4FE5-BF97-232A73134EB1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
