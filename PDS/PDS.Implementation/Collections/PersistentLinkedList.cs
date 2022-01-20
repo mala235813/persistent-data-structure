@@ -117,9 +117,8 @@ namespace PDS.Implementation.Collections
             }
 
             var newNode = new ListNode<T>(_versionStorage.NextVersion(), value);
-            var newFatNode = new ListFatNode<T>();
-            newFatNode.Add(newNode);
-
+            var newFatNode = new ListFatNode<T>(newNode);
+            
             var front = _root.Front;
             if (front.IsEmpty)
             {
@@ -176,8 +175,8 @@ namespace PDS.Implementation.Collections
                 return new PersistentLinkedList<T>(_versionStorage, newVersion, Count);
             }
 
-            var newFatNode = new ListFatNode<T>();
-            newFatNode.Add(newNode);
+            var newFatNode = new ListFatNode<T>(newNode);
+
             if (newNode.LeftNode != null)
             {
                 newNode.LeftNode = foundNode.LeftNode.UpdateRight(newFatNode, newVersion);
@@ -207,9 +206,10 @@ namespace PDS.Implementation.Collections
             }
 
             var newNode = new ListNode<T>(_versionStorage.NextVersion(), value);
-            var newFatNode = new ListFatNode<T>();
-            newFatNode.Add(newNode);
+            var newFatNode = new ListFatNode<T>(newNode);
+            
             var newVersion = new VersionNode<T>(_versionStorage.CurrentVersion, _root.Front, newFatNode, _root);
+            newNode.LeftNode = _root.Back.UpdateRight(newFatNode, newVersion);
 
             return new PersistentLinkedList<T>(_versionStorage, newVersion, Count + 1);
         }
@@ -222,18 +222,19 @@ namespace PDS.Implementation.Collections
             }
 
             var newNode = new ListNode<T>(_versionStorage.NextVersion(), value);
-            var newFatNode = new ListFatNode<T>();
-            newFatNode.Add(newNode);
-            var newVersion = new VersionNode<T>(_versionStorage.CurrentVersion, newFatNode, _root.Back, _root);
+            var newFatNode = new ListFatNode<T>(newNode);
 
+            var newVersion = new VersionNode<T>(_versionStorage.CurrentVersion, newFatNode, _root.Back, _root);
+            newNode.RightNode = _root.Front.UpdateLeft(newFatNode, newVersion);
+            
             return new PersistentLinkedList<T>(_versionStorage, newVersion, Count + 1);
         }
 
         private PersistentLinkedList<T> InitRoot(T value)
         {
             var newNode = new ListNode<T>(_versionStorage.NextVersion(), value);
-            var newFatNode = new ListFatNode<T>();
-            newFatNode.Add(newNode);
+            var newFatNode = new ListFatNode<T>(newNode);
+
             var newVersion = new VersionNode<T>(_versionStorage.CurrentVersion, newFatNode, newFatNode, _root);
             return new PersistentLinkedList<T>(_versionStorage, newVersion, Count + 1);
         }

@@ -12,7 +12,7 @@ public class Tests
         var list = new PersistentLinkedList<int>();
 
         var a = list.PushBack(0);
-        var b = a.PushBack(1);
+        var b = a.Set(0, 1);
         var c = b.PushBack(2);
         var d = c.Remove(1);
 

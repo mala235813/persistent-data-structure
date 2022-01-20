@@ -10,8 +10,18 @@ namespace PDS.Implementation.Collections
 
         public static ListFatNode<T> Empty => new();
 
-        public List<ListNode<T>> Nodes { get; } = new();
+        public List<ListNode<T>> Nodes { get; }
+        
+        public ListFatNode()
+        {
+            Nodes = new List<ListNode<T>>();
+        }
 
+        public ListFatNode(ListNode<T> node)
+        {
+            Nodes = new List<ListNode<T>> {node};
+        }
+        
         public void Add(ListNode<T> n)
         {
             Nodes.Add(n);
@@ -22,7 +32,7 @@ namespace PDS.Implementation.Collections
             var it = versionNode;
             while (it != null)
             {
-                var node = Nodes.FirstOrDefault(n => n.Version == versionNode.Version);
+                var node = Nodes.FirstOrDefault(n => n.Version == it.Version);
                 if (node is null)
                 {
                     it = it.Parent;
