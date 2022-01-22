@@ -8,8 +8,10 @@ namespace PDS.Collections
         
         TSelf AddRange(IEnumerable<T> items);
         
+        TSelf AddRange(IReadOnlyCollection<T> items);
+        
         TSelf Clear();
         
-//        static TSelf Empty { get; } 
+        bool IsEmpty { get; }
     }
 }

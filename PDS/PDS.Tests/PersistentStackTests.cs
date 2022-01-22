@@ -1,90 +1,91 @@
-﻿using System.Collections.Generic;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Linq;
+using FluentAssertions;
 using NUnit.Framework;
 using PDS.Implementation.Collections;
 
-namespace PDS.Tests;
-
-[TestFixture]
-public class PersistentStackTests
+namespace PDS.Tests
 {
-    [Test]
-    public void PersistentStack_PushPopTest_IsCorrect()
+    [TestFixture]
+    public class PersistentStackTests
     {
-        var a = PersistentStack<int>.Empty;
+        [Test]
+        public void PersistentStack_PushPopTest_IsCorrect()
+        {
+            var a = PersistentStack<int>.Empty;
         
-        Assert.That(a.Count, Is.EqualTo(0));
-        Assert.That(a.IsEmpty);
+            Assert.That(a.Count, Is.EqualTo(0));
+            Assert.That(a.IsEmpty);
 
-        var b = a.Push(0);
+            var b = a.Push(0);
  
-        Assert.That(a.Count, Is.EqualTo(0));
-        Assert.That(a.IsEmpty);
-        Assert.That(b.Count, Is.EqualTo(1));
-        Assert.That(b.IsEmpty, Is.False);
-        Assert.That(b.Peek(), Is.EqualTo(0));
+            Assert.That(a.Count, Is.EqualTo(0));
+            Assert.That(a.IsEmpty);
+            Assert.That(b.Count, Is.EqualTo(1));
+            Assert.That(b.IsEmpty, Is.False);
+            Assert.That(b.Peek(), Is.EqualTo(0));
 
-        var c = b.Pop();
+            var c = b.Pop();
         
-        Assert.That(b.Count, Is.EqualTo(1));
-        Assert.That(b.IsEmpty, Is.False);
-        Assert.That(b.Peek(), Is.EqualTo(0));
-        Assert.That(c.Count, Is.EqualTo(0));
-        Assert.That(c.IsEmpty);
+            Assert.That(b.Count, Is.EqualTo(1));
+            Assert.That(b.IsEmpty, Is.False);
+            Assert.That(b.Peek(), Is.EqualTo(0));
+            Assert.That(c.Count, Is.EqualTo(0));
+            Assert.That(c.IsEmpty);
 
-        var d = b.Push(1);
+            var d = b.Push(1);
         
-        Assert.That(b.Count, Is.EqualTo(1));
-        Assert.That(b.IsEmpty, Is.False);
-        Assert.That(b.Peek(), Is.EqualTo(0));
-        Assert.That(d.Count, Is.EqualTo(2));
-        Assert.That(d.IsEmpty, Is.False);
-        Assert.That(d.Peek(), Is.EqualTo(1));
-    }
+            Assert.That(b.Count, Is.EqualTo(1));
+            Assert.That(b.IsEmpty, Is.False);
+            Assert.That(b.Peek(), Is.EqualTo(0));
+            Assert.That(d.Count, Is.EqualTo(2));
+            Assert.That(d.IsEmpty, Is.False);
+            Assert.That(d.Peek(), Is.EqualTo(1));
+        }
 
-    [Test]
-    public void PersistentStack_AsImmutableStack_IsCorrect()
-    {
-        IImmutableStack<int> a = PersistentStack<int>.Empty;
+        [Test]
+        public void PersistentStack_AsImmutableStack_IsCorrect()
+        {
+            IImmutableStack<int> a = PersistentStack<int>.Empty;
         
-        Assert.That(a.IsEmpty);
+            Assert.That(a.IsEmpty);
 
-        var b = a.Push(0);
+            var b = a.Push(0);
  
-        Assert.That(a.IsEmpty);
-        Assert.That(b.IsEmpty, Is.False);
-        Assert.That(b.Peek(), Is.EqualTo(0));
+            Assert.That(a.IsEmpty);
+            Assert.That(b.IsEmpty, Is.False);
+            Assert.That(b.Peek(), Is.EqualTo(0));
 
-        var c = b.Pop();
+            var c = b.Pop();
         
-        Assert.That(b.IsEmpty, Is.False);
-        Assert.That(b.Peek(), Is.EqualTo(0));
-        Assert.That(c.IsEmpty);
+            Assert.That(b.IsEmpty, Is.False);
+            Assert.That(b.Peek(), Is.EqualTo(0));
+            Assert.That(c.IsEmpty);
 
-        var d = b.Push(1);
+            var d = b.Push(1);
         
-        Assert.That(b.IsEmpty, Is.False);
-        Assert.That(b.Peek(), Is.EqualTo(0));
+            Assert.That(b.IsEmpty, Is.False);
+            Assert.That(b.Peek(), Is.EqualTo(0));
 
-        Assert.That(d.IsEmpty, Is.False);
-        Assert.That(d.Peek(), Is.EqualTo(1));
+            Assert.That(d.IsEmpty, Is.False);
+            Assert.That(d.Peek(), Is.EqualTo(1));
         
-        Assert.That(d.Clear().IsEmpty);
-    }
+            Assert.That(d.Clear().IsEmpty);
+        }
     
-    [Test]
-    public void PersistentStack_ClearAddRangeTest_IsCorrect()
-    {
-        var array = Enumerable.Range(1, 5).ToArray();
-        var stack = PersistentStack<int>.Empty.AddRange(array);
-        
-        Assert.That(stack.Count, Is.EqualTo(5));
-        Assert.That(stack.Peek(), Is.EqualTo(5));
-        
-        CollectionAssert.AreEqual(array.Reverse(), stack);
-        
-        Assert.That(stack.Add(6).Peek(), Is.EqualTo(6));
-        Assert.That(stack.Clear(), Is.Empty);
+        [Test]
+        public void PersistentStack_ClearAddRangeTest_IsCorrect()
+        {
+            var array = Enumerable.Range(1, 5).ToArray();
+            var stack = PersistentStack<int>.Empty.AddRange(array);
+
+            stack.Count.Should().Be(5);
+            stack.Peek().Should().Be(5);
+
+            stack.Should().BeEquivalentTo(array.Reverse(), opt => opt.WithStrictOrdering());
+            
+            stack.Add(6).Peek().Should().Be(6);
+            stack.Clear().Should().BeEmpty();
+        }
     }
 }

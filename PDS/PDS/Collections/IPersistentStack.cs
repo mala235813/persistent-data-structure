@@ -4,8 +4,12 @@ namespace PDS.Collections
 {
     public interface IPersistentStack<T> : IPersistentDataStructure<T, IPersistentStack<T>>, IImmutableStack<T>
     {
-        IPersistentStack<T> Pop();
-        IPersistentStack<T> Push(T value);
-        IPersistentStack<T> Clear();
+        new IPersistentStack<T> Pop();
+
+        new IPersistentStack<T> Push(T value);
+        
+        new IPersistentStack<T> Clear();
+        
+        new bool IsEmpty { get; }
     }
 }

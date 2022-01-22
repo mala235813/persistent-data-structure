@@ -6,11 +6,15 @@ namespace PDS.Collections
 {
     public interface IPersistentList<T> : IPersistentDataStructure<T, IPersistentList<T>>, IImmutableList<T>
     {
+        new IPersistentList<T> Add(T item);
+        
         new IPersistentList<T> AddRange(IEnumerable<T> items);
+        
+        new IPersistentList<T> AddRange(IReadOnlyCollection<T> items);
         
         new int IndexOf(T item, int index, int count, IEqualityComparer<T>? equalityComparer);
         
-        new IPersistentList<T> Insert(int index, T element);
+        new IPersistentList<T> Insert(int index, T item);
 
         new int LastIndexOf(T item, int index, int count, IEqualityComparer<T>? equalityComparer);
 

@@ -40,6 +40,8 @@ namespace PDS.Implementation.Collections
             return items.Aggregate(stack, (current, item) => current.Push(item));
         }
 
+        public IPersistentStack<T> AddRange(IReadOnlyCollection<T> items) => AddRange(items.AsEnumerable());
+
         public IPersistentStack<T> Clear()
         {
             return Empty;
