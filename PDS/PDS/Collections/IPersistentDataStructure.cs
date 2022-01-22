@@ -12,11 +12,4 @@ namespace PDS.Collections
         
 //        static TSelf Empty { get; } 
     }
-
-    public interface ITransactional<out TSelf>
-    {
-        TSelf Undo();
-
-        TSelf Redo();
-    }
 }

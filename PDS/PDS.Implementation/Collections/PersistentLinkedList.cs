@@ -69,7 +69,7 @@ namespace PDS.Implementation.Collections
             var newVersion = new VersionNode<T>(_versionStorage.CurrentVersion, _root.Front, _root.Back, _root);
             if (delNode.RightNode is null)
             {
-                var newLeft = delNode.LeftNode.UpdateRight(null, newVersion);
+                var newLeft = delNode.LeftNode!.UpdateRight(null, newVersion);
                 if (indFatNode == _root.Back)
                 {
                     newVersion.Back = newLeft;
@@ -93,6 +93,7 @@ namespace PDS.Implementation.Collections
             {
                 var newLeft = delNode.LeftNode.UpdateRight(delNode.RightNode, newVersion);
                 var newRight = delNode.RightNode.UpdateLeft(delNode.LeftNode, newVersion);
+                Debug.Assert(newLeft == newRight, "newLeft == newRight");
                 return new PersistentLinkedList<T>(_versionStorage, newVersion, Count - 1);
             }
 
@@ -179,7 +180,7 @@ namespace PDS.Implementation.Collections
 
             if (newNode.LeftNode != null)
             {
-                newNode.LeftNode = foundNode.LeftNode.UpdateRight(newFatNode, newVersion);
+                newNode.LeftNode = foundNode.LeftNode!.UpdateRight(newFatNode, newVersion);
             }
             else
             {
@@ -188,7 +189,7 @@ namespace PDS.Implementation.Collections
 
             if (newNode.RightNode != null)
             {
-                newNode.RightNode = foundNode.RightNode.UpdateLeft(newFatNode, newVersion);
+                newNode.RightNode = foundNode.RightNode!.UpdateLeft(newFatNode, newVersion);
             }
             else
             {
