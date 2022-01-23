@@ -31,5 +31,7 @@ namespace PDS.Collections
         new IPersistentList<T> Replace(T oldValue, T newValue, IEqualityComparer<T>? equalityComparer);
 
         new IPersistentList<T> SetItem(int index, T value);
+
+        new IPersistentList<T> Clear();
     }
 }
