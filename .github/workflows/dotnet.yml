@@ -8,18 +8,82 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
+    defaults:
+      run:
+        working-directory: ./PDS
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
+        
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.11
+        
+    - name: Cache SonarCloud packages
+      uses: actions/cache@v1
+      with:
+        path: ~\sonar\cache
+        key: ${{ runner.os }}-sonar
+        restore-keys: ${{ runner.os }}-sonar
+        
+    - name: Cache SonarCloud scanner
+      id: cache-sonar-scanner
+      uses: actions/cache@v1
+      with:
+        path: .\.sonar\scanner
+        key: ${{ runner.os }}-sonar-scanner
+        restore-keys: ${{ runner.os }}-sonar-scanner
+        
+    - name: Install SonarCloud scanner
+      if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+      run: |
+        mkdir -p ./.sonar/scanner
+        dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
+        
+#     - name: Build and analyze
+#       env:
+#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+#         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#       shell: pwsh
+#       run: |
+#         .\.sonar\scanner\dotnet-sonarscanner begin /k:"6gales_persistent-data-structure" /o:"6gales" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+#         dotnet build
+#         .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+        
+        
     - name: Restore dependencies
       run: dotnet restore
+      
+    - name: Sonarqube Begin
+      run: | 
+        dotnet tool install --global dotnet-sonarscanner
+        dotnet sonarscanner begin /o:"6gales" /k:"6gales_persistent-data-structure" /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url="https://sonarcloud.io/" /d:sonar.cs.opencover.reportsPaths="${{ github.workspace }}/PDS/PDS.Tests/TestResults/coverage.opencover.xml" /s:$GITHUB_WORKSPACE/SonarQube.Analysis.xml
+      
     - name: Build
       run: dotnet build --no-restore
+      
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --no-build /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=opencover
+      
+    - name: Sonarqube end
+      run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+#     - name: Publish coverage report to coveralls.io
+#       uses: coverallsapp/github-action@master
+#       with:
+#         github-token: ${{ secrets.GITHUB_TOKEN }}
+#         path-to-lcov: ${{ github.workspace }}/PDS/PDS.Tests/TestResults/coverage.info 
+        
+    - name: Build and deploy package
+      run: dotnet publish -c=Release
+      
