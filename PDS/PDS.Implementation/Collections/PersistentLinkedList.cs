@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Linq;
 using PDS.Collections;
 
 namespace PDS.Implementation.Collections
@@ -50,7 +51,7 @@ namespace PDS.Implementation.Collections
             return it;
         }
 
-        public PersistentLinkedList<T> Remove(int index)
+        public PersistentLinkedList<T> RemoveAt(int index)
         {
             if (index < 0 || index >= Count)
             {
@@ -58,8 +59,12 @@ namespace PDS.Implementation.Collections
             }
 
             var indFatNode = TraverseRight(index);
-            var delNode = indFatNode.FindNode(_root);
+            return RemoveByNode(indFatNode);
+        }
 
+        private PersistentLinkedList<T> RemoveByNode(ListFatNode<T> fatNode)
+        {
+            var delNode = fatNode.FindNode(_root);
             if (delNode.LeftNode is null && delNode.RightNode is null)
             {
                 var newV = new VersionNode<T>(_versionStorage.CurrentVersion, ListFatNode<T>.Empty,
@@ -71,7 +76,7 @@ namespace PDS.Implementation.Collections
             if (delNode.RightNode is null)
             {
                 var newLeft = delNode.LeftNode!.UpdateRight(null, newVersion);
-                if (indFatNode == _root.Back)
+                if (fatNode == _root.Back)
                 {
                     newVersion.Back = newLeft;
                 }
@@ -82,7 +87,7 @@ namespace PDS.Implementation.Collections
             if (delNode.LeftNode is null)
             {
                 var newRight = delNode.RightNode.UpdateLeft(null, newVersion);
-                if (indFatNode == _root.Front)
+                if (fatNode == _root.Front)
                 {
                     newVersion.Front = newRight;
                 }
@@ -105,7 +110,7 @@ namespace PDS.Implementation.Collections
 
             return new PersistentLinkedList<T>(_versionStorage, newVersion, Count - 1);
         }
-        
+
         public PersistentLinkedList<T> Insert(int index, T value)
         {
             if (index < 0 || index > Count)
@@ -120,7 +125,7 @@ namespace PDS.Implementation.Collections
 
             var newNode = new ListNode<T>(_versionStorage.NextVersion(), value);
             var newFatNode = new ListFatNode<T>(newNode);
-            
+
             var front = _root.Front;
             if (front.IsEmpty)
             {
@@ -151,8 +156,8 @@ namespace PDS.Implementation.Collections
 
             return new PersistentLinkedList<T>(_versionStorage, newVersion, Count + 1);
         }
-        
-               public PersistentLinkedList<T> Set(int index, T value)
+
+        public PersistentLinkedList<T> Set(int index, T value)
         {
             if (index < 0 || index > Count)
             {
@@ -204,7 +209,7 @@ namespace PDS.Implementation.Collections
 
             var newNode = new ListNode<T>(_versionStorage.NextVersion(), value);
             var newFatNode = new ListFatNode<T>(newNode);
-            
+
             var newVersion = new VersionNode<T>(_versionStorage.CurrentVersion, _root.Front, newFatNode, _root);
             newNode.LeftNode = _root.Back.UpdateRight(newFatNode, newVersion);
 
@@ -223,7 +228,7 @@ namespace PDS.Implementation.Collections
 
             var newVersion = new VersionNode<T>(_versionStorage.CurrentVersion, newFatNode, _root.Back, _root);
             newNode.RightNode = _root.Front.UpdateLeft(newFatNode, newVersion);
-            
+
             return new PersistentLinkedList<T>(_versionStorage, newVersion, Count + 1);
         }
 
@@ -237,14 +242,35 @@ namespace PDS.Implementation.Collections
         }
 
         #region IPersistentLinkedList
-        
+
         public T First => _root.Front.FindNode(_root).Value;
 
         public T Last => _root.Back.FindNode(_root).Value;
 
         public int IndexOf(T item, int index, int count, IEqualityComparer<T>? equalityComparer)
         {
-            throw new NotImplementedException();
+            if (index < 0 || index >= Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
+            if (count < 0 || index + count > Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count));
+            }
+
+            var i = index;
+            foreach (var it in this.Skip(index).Take(count))
+            {
+                if (Equals(it, item))
+                {
+                    return i;
+                }
+
+                i++;
+            }
+
+            return -1;
         }
 
         IPersistentLinkedList<T> IPersistentLinkedList<T>.Insert(int index, T item)
@@ -262,10 +288,7 @@ namespace PDS.Implementation.Collections
             throw new NotImplementedException();
         }
 
-        public IPersistentLinkedList<T> RemoveAt(int index)
-        {
-            throw new NotImplementedException();
-        }
+        IPersistentLinkedList<T> IPersistentLinkedList<T>.RemoveAt(int index) => RemoveAt(index);
 
         public IPersistentLinkedList<T> RemoveRange(IEnumerable<T> items, IEqualityComparer<T>? equalityComparer)
         {
@@ -284,27 +307,27 @@ namespace PDS.Implementation.Collections
 
         public IPersistentLinkedList<T> SetItem(int index, T value)
         {
-            throw new NotImplementedException();
+            return Set(index, value);
         }
-        
+
         public IPersistentLinkedList<T> AddFirst(T item)
         {
-            throw new NotImplementedException();
+            return PushFront(item);
         }
 
         public IPersistentLinkedList<T> AddLast(T item)
         {
-            throw new NotImplementedException();
+            return PushBack(item);
         }
 
         public IPersistentLinkedList<T> RemoveFirst()
         {
-            throw new NotImplementedException();
+            return RemoveByNode(_root.Front);
         }
 
         public IPersistentLinkedList<T> RemoveLast()
         {
-            throw new NotImplementedException();
+            return RemoveByNode(_root.Back);
         }
 
         public bool Contains(T item)
@@ -317,144 +340,127 @@ namespace PDS.Implementation.Collections
             return TraverseRight(index).FindNode(_root).Value;
         }
 
-        IPersistentLinkedList<T> IPersistentLinkedList<T>.Add(T item)
+        public IPersistentLinkedList<T> Add(T item)
         {
-            throw new NotImplementedException();
+            return PushBack(item);
         }
 
-        IPersistentLinkedList<T> IPersistentLinkedList<T>.AddRange(IEnumerable<T> items)
+        public IPersistentLinkedList<T> AddRange(IEnumerable<T> items)
         {
-            throw new NotImplementedException();
+            using var enumerator = items.GetEnumerator();
+            if (!enumerator.MoveNext())
+            {
+                return this;
+            }
+
+            var count = 0;
+            VersionNode<T> newVersion;
+            if (Count == 0)
+            {
+                count++;
+                var newNode = new ListNode<T>(_versionStorage.NextVersion(), enumerator.Current);
+                var newFatNode = new ListFatNode<T>(newNode);
+
+                newVersion = new VersionNode<T>(_versionStorage.CurrentVersion, newFatNode, newFatNode, _root);
+            }
+            else
+            {
+                newVersion = new VersionNode<T>(_versionStorage.NextVersion(), _root.Front, _root.Back, _root);
+                enumerator.Reset();
+            }
+
+            while (enumerator.MoveNext())
+            {
+                count++;
+                var newNode = new ListNode<T>(_versionStorage.CurrentVersion, enumerator.Current);
+                var newFatNode = new ListFatNode<T>(newNode);
+
+                newVersion.Back = newFatNode;
+                newNode.LeftNode = _root.Back.UpdateRight(newFatNode, newVersion);
+            }
+
+            return new PersistentLinkedList<T>(_versionStorage, newVersion, count);
         }
 
-        IPersistentLinkedList<T> IPersistentLinkedList<T>.AddRange(IReadOnlyCollection<T> items)
+        public IPersistentLinkedList<T> AddRange(IReadOnlyCollection<T> items)
         {
-            throw new NotImplementedException();
+            return AddRange(items.AsEnumerable());
         }
-        
+
         #endregion
 
         #region IPersistentDataStructure
 
         public bool IsEmpty => Count == 0;
-        
+
         public IEnumerator<T> GetEnumerator()
         {
-            throw new NotImplementedException();
+            var it = _root.Front;
+            for (var i = 0; i < Count; i++)
+            {
+                var listNode = it.FindNode(_root);
+                yield return listNode.Value;
+                it = listNode.RightNode;
+                Debug.Assert(it != null, "Inner node is null");
+            }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        IPersistentLinkedList<T> IPersistentDataStructure<T, IPersistentLinkedList<T>>.Add(T value)
-        {
-            throw new NotImplementedException();
-        }
-        
-        IPersistentLinkedList<T> IPersistentDataStructure<T, IPersistentLinkedList<T>>.AddRange(IEnumerable<T> items)
-        {
-            throw new NotImplementedException();
-        }
+        IPersistentLinkedList<T> IPersistentDataStructure<T, IPersistentLinkedList<T>>.Add(T value) => Add(value);
 
-        IPersistentLinkedList<T> IPersistentDataStructure<T, IPersistentLinkedList<T>>.AddRange(IReadOnlyCollection<T> items)
-        {
-            throw new NotImplementedException();
-        }
+        IPersistentLinkedList<T> IPersistentDataStructure<T, IPersistentLinkedList<T>>.AddRange(IEnumerable<T> items) =>
+            AddRange(items);
 
-        IPersistentLinkedList<T> IPersistentDataStructure<T, IPersistentLinkedList<T>>.Clear()
-        {
-            throw new NotImplementedException();
-        }
-        
+        IPersistentLinkedList<T> IPersistentDataStructure<T, IPersistentLinkedList<T>>.AddRange(
+            IReadOnlyCollection<T> items) => AddRange(items);
+
+        public IPersistentLinkedList<T> Clear() => new PersistentLinkedList<T>();
+
         #endregion
 
         #region IPersistentStack
-        
-        IPersistentStack<T> IPersistentDataStructure<T, IPersistentStack<T>>.AddRange(IEnumerable<T> items)
-        {
-            throw new NotImplementedException();
-        }
 
-        IPersistentStack<T> IPersistentDataStructure<T, IPersistentStack<T>>.AddRange(IReadOnlyCollection<T> items)
-        {
-            throw new NotImplementedException();
-        }
+        IPersistentStack<T> IPersistentDataStructure<T, IPersistentStack<T>>.AddRange(IEnumerable<T> items) =>
+            AddRange(items);
 
-        IPersistentStack<T> IPersistentStack<T>.Clear()
-        {
-            throw new NotImplementedException();
-        }
+        IPersistentStack<T> IPersistentDataStructure<T, IPersistentStack<T>>.AddRange(IReadOnlyCollection<T> items) =>
+            AddRange(items);
 
-        IPersistentStack<T> IPersistentStack<T>.Push(T value)
-        {
-            throw new NotImplementedException();
-        }
-        
-        IPersistentStack<T> IPersistentDataStructure<T, IPersistentStack<T>>.Clear()
-        {
-            throw new NotImplementedException();
-        }
+        IPersistentStack<T> IPersistentStack<T>.Clear() => Clear();
 
-        T IImmutableStack<T>.Peek()
-        {
-            throw new NotImplementedException();
-        }
+        IPersistentStack<T> IPersistentStack<T>.Push(T value) => PushBack(value);
 
-        IPersistentStack<T> IPersistentStack<T>.Pop()
-        {
-            throw new NotImplementedException();
-        }
+        IPersistentStack<T> IPersistentDataStructure<T, IPersistentStack<T>>.Clear() => Clear();
 
-        IImmutableStack<T> IImmutableStack<T>.Pop()
-        {
-            throw new NotImplementedException();
-        }
+        T IImmutableStack<T>.Peek() => Last;
 
-        IImmutableStack<T> IImmutableStack<T>.Push(T value)
-        {
-            throw new NotImplementedException();
-        }
+        IPersistentStack<T> IPersistentStack<T>.Pop() => RemoveLast();
+
+        IImmutableStack<T> IImmutableStack<T>.Pop() => RemoveLast();
+
+        IImmutableStack<T> IImmutableStack<T>.Push(T value) => PushBack(value);
 
         bool IImmutableStack<T>.IsEmpty => IsEmpty;
 
-        IPersistentStack<T> IPersistentDataStructure<T, IPersistentStack<T>>.Add(T value)
-        {
-            throw new NotImplementedException();
-        }
-        
+        IPersistentStack<T> IPersistentDataStructure<T, IPersistentStack<T>>.Add(T value) => Add(value);
+
         #endregion
 
         #region IPersistentQueue
-        
-        public IImmutableQueue<T> Dequeue()
-        {
-            throw new NotImplementedException();
-        }
 
-        public IImmutableQueue<T> Enqueue(T value)
-        {
-            throw new NotImplementedException();
-        }
+        public IImmutableQueue<T> Dequeue() => RemoveFirst();
 
-        IImmutableStack<T> IImmutableStack<T>.Clear()
-        {
-            throw new NotImplementedException();
-        }
+        public IImmutableQueue<T> Enqueue(T value) => PushBack(value);
 
-        T IImmutableQueue<T>.Peek()
-        {
-            throw new NotImplementedException();
-        }
+        IImmutableStack<T> IImmutableStack<T>.Clear() => Clear();
+
+        T IImmutableQueue<T>.Peek() => First;
 
         bool IImmutableQueue<T>.IsEmpty => IsEmpty;
 
-        IImmutableQueue<T> IImmutableQueue<T>.Clear()
-        {
-            throw new NotImplementedException();
-        }
-        
+        IImmutableQueue<T> IImmutableQueue<T>.Clear() => Clear();
+
         #endregion
     }
 }
