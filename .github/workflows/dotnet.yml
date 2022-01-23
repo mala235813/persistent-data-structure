@@ -65,24 +65,24 @@ jobs:
     - name: Sonarqube Begin
       run: | 
         dotnet tool install --global dotnet-sonarscanner
-        dotnet sonarscanner begin /o:"6gales" /k:"6gales_persistent-data-structure" /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url="https://sonarcloud.io/" /s:$GITHUB_WORKSPACE/SonarQube.Analysis.xml
+        dotnet sonarscanner begin /o:"6gales" /k:"6gales_persistent-data-structure" /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url="https://sonarcloud.io/" /d:sonar.cs.opencover.reportsPaths="${{ github.workspace }}/PDS/PDS.Tests/TestResults/coverage.opencover.xml" /s:$GITHUB_WORKSPACE/SonarQube.Analysis.xml
       
     - name: Build
       run: dotnet build --no-restore
       
     - name: Test
-      run: dotnet test --no-build /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov
+      run: dotnet test --no-build /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=opencover
       
     - name: Sonarqube end
       run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
-    - name: Publish coverage report to coveralls.io
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: ${{ github.workspace }}/PDS/PDS.Tests/TestResults/coverage.info 
+#     - name: Publish coverage report to coveralls.io
+#       uses: coverallsapp/github-action@master
+#       with:
+#         github-token: ${{ secrets.GITHUB_TOKEN }}
+#         path-to-lcov: ${{ github.workspace }}/PDS/PDS.Tests/TestResults/coverage.info 
         
     - name: Build and deploy package
       run: dotnet publish -c=Release
