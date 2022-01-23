@@ -186,9 +186,9 @@ namespace PDS.Implementation.Collections
             }
 
             var (index, bucket) = GetBucket(value);
-            foreach (var v in bucket.Where(v => v.Equals(value)))
+            if (bucket.Any(v => v.Equals(value)))
             {
-                return Equals(v, value) ? this : Update(bucket, index, value);
+                return Update(bucket, index, value);
             }
 
             var newBucket = new List<T>(bucket) {value};
