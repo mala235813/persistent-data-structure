@@ -13,7 +13,7 @@ namespace PDS.Tests
             var a = list.PushBack(0);
             var b = a.Set(0, 1);
             var c = b.PushBack(2);
-            var d = c.Remove(1);
+            var d = c.RemoveAt(1);
 
             Assert.That(list.Count, Is.EqualTo(0));
             Assert.That(a.Get(0), Is.EqualTo(0));
