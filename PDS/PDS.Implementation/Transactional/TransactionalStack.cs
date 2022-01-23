@@ -47,6 +47,16 @@ namespace PDS.Implementation.Transactional
             throw new System.NotImplementedException();
         }
 
+        ITransactionalDataStructure<T, ITransactionalStack<T>> IPersistentDataStructure<T, ITransactionalDataStructure<T, ITransactionalStack<T>>>.AddRange(IReadOnlyCollection<T> items)
+        {
+            throw new NotImplementedException();
+        }
+
+        IPersistentStack<T> IPersistentDataStructure<T, IPersistentStack<T>>.AddRange(IReadOnlyCollection<T> items)
+        {
+            throw new NotImplementedException();
+        }
+
         ITransactionalStack<T> ITransactionalStack<T>.Clear()
         {
             var u = _undoStack.Push(_persistentStack);
