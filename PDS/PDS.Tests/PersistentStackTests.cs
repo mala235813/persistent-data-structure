@@ -87,5 +87,13 @@ namespace PDS.Tests
             stack.Add(6).Peek().Should().Be(6);
             stack.Clear().Should().BeEmpty();
         }
+
+        [Test]
+        public void chi_da()
+        {
+            var a = new PersistentLinkedList<int>().AddRange(Enumerable.Range(0, 10));
+
+            a.Count.Should().Be(10);
+        }
     }
 }

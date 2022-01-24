@@ -347,39 +347,47 @@ namespace PDS.Implementation.Collections
 
         public IPersistentLinkedList<T> AddRange(IEnumerable<T> items)
         {
-            using var enumerator = items.GetEnumerator();
-            if (!enumerator.MoveNext())
+            // using var enumerator = items.GetEnumerator();
+            // if (!enumerator.MoveNext())
+            // {
+            //     return this;
+            // }
+            //
+            // var count = 0;
+            // VersionNode<T> newVersion;
+            // if (Count == 0)
+            // {
+            //     count++;
+            //     var newNode = new ListNode<T>(_versionStorage.NextVersion(), enumerator.Current);
+            //     var newFatNode = new ListFatNode<T>(newNode);
+            //
+            //     newVersion = new VersionNode<T>(_versionStorage.CurrentVersion, newFatNode, newFatNode, _root);
+            // }
+            // else
+            // {
+            //     newVersion = new VersionNode<T>(_versionStorage.NextVersion(), _root.Front, _root.Back, _root);
+            //     enumerator.Reset();
+            // }
+            //
+            // while (enumerator.MoveNext())
+            // {
+            //     count++;
+            //     var newNode = new ListNode<T>(_versionStorage.CurrentVersion, enumerator.Current);
+            //     var newFatNode = new ListFatNode<T>(newNode);
+            //
+            //     newVersion.Back = newFatNode;
+            //     newNode.LeftNode = _root.Back.UpdateRight(newFatNode, newVersion);
+            // }
+            //
+            // return new PersistentLinkedList<T>(_versionStorage, newVersion, count);
+            var list = this;
+            
+            foreach (var item in items)
             {
-                return this;
+                list = list.PushBack(item);
             }
 
-            var count = 0;
-            VersionNode<T> newVersion;
-            if (Count == 0)
-            {
-                count++;
-                var newNode = new ListNode<T>(_versionStorage.NextVersion(), enumerator.Current);
-                var newFatNode = new ListFatNode<T>(newNode);
-
-                newVersion = new VersionNode<T>(_versionStorage.CurrentVersion, newFatNode, newFatNode, _root);
-            }
-            else
-            {
-                newVersion = new VersionNode<T>(_versionStorage.NextVersion(), _root.Front, _root.Back, _root);
-                enumerator.Reset();
-            }
-
-            while (enumerator.MoveNext())
-            {
-                count++;
-                var newNode = new ListNode<T>(_versionStorage.CurrentVersion, enumerator.Current);
-                var newFatNode = new ListFatNode<T>(newNode);
-
-                newVersion.Back = newFatNode;
-                newNode.LeftNode = _root.Back.UpdateRight(newFatNode, newVersion);
-            }
-
-            return new PersistentLinkedList<T>(_versionStorage, newVersion, count);
+            return list;
         }
 
         public IPersistentLinkedList<T> AddRange(IReadOnlyCollection<T> items)
