@@ -36,27 +36,24 @@ namespace PDS.Implementation.UndoRedo
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public int Count => _persistentDictionary.Count;
-        IPersistentDictionary<TKey, TValue> 
-            IPersistentDataStructure<KeyValuePair<TKey, TValue>, IPersistentDictionary<TKey, TValue>>.Add(KeyValuePair<TKey, TValue> value)
-        {
-            var u = _undoStack.Push(_persistentDictionary);
-            return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.Add(value), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
-        }
 
-        IUndoRedoDictionary<TKey, TValue> 
-            IUndoRedoDictionary<TKey, TValue>.AddRange(IEnumerable<KeyValuePair<TKey, TValue>> pairs)
+        IPersistentDictionary<TKey, TValue>
+            IPersistentDataStructure<KeyValuePair<TKey, TValue>, IPersistentDictionary<TKey, TValue>>.Add(
+                KeyValuePair<TKey, TValue> value) => Add(value.Key, value.Value);
+
+        public IUndoRedoDictionary<TKey, TValue> AddRange(IEnumerable<KeyValuePair<TKey, TValue>> pairs)
         {
             var u = _undoStack.Push(_persistentDictionary);
             return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.AddRange(pairs), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
         }
 
-        IUndoRedoDictionary<TKey, TValue> IUndoRedoDictionary<TKey, TValue>.RemoveRange(IEnumerable<TKey> keys)
+        public IUndoRedoDictionary<TKey, TValue> RemoveRange(IEnumerable<TKey> keys)
         {
             var u = _undoStack.Push(_persistentDictionary);
             return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.RemoveRange(keys), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
         }
 
-        IUndoRedoDictionary<TKey, TValue> IUndoRedoDictionary<TKey, TValue>.Remove(TKey key)
+        public IUndoRedoDictionary<TKey, TValue> Remove(TKey key)
         {
             var u = _undoStack.Push(_persistentDictionary);
             return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.Remove(key), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
@@ -75,31 +72,31 @@ namespace PDS.Implementation.UndoRedo
             return false;
         }
 
-        IUndoRedoDictionary<TKey, TValue> IUndoRedoDictionary<TKey, TValue>.SetItem(TKey key, TValue value)
+        public IUndoRedoDictionary<TKey, TValue> SetItem(TKey key, TValue value)
         {
             var u = _undoStack.Push(_persistentDictionary);
             return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.SetItem(key, value), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
         }
 
-        IUndoRedoDictionary<TKey, TValue> IUndoRedoDictionary<TKey, TValue>.SetItems(IEnumerable<KeyValuePair<TKey, TValue>> items)
+        public IUndoRedoDictionary<TKey, TValue> SetItems(IEnumerable<KeyValuePair<TKey, TValue>> items)
         {
             var u = _undoStack.Push(_persistentDictionary);
             return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.SetItems(items), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
         }
 
-        IUndoRedoDictionary<TKey, TValue> IUndoRedoDictionary<TKey, TValue>.Add(TKey key, TValue value)
+        public IUndoRedoDictionary<TKey, TValue> Add(TKey key, TValue value)
         {
             var u = _undoStack.Push(_persistentDictionary);
             return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.Add(key, value), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
         }
 
-        IUndoRedoDictionary<TKey, TValue> IUndoRedoDictionary<TKey, TValue>.AddOrUpdate(TKey key, TValue value)
+        public IUndoRedoDictionary<TKey, TValue> AddOrUpdate(TKey key, TValue value)
         {
             var u = _undoStack.Push(_persistentDictionary);
             return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.AddOrUpdate(key, value), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
         }
 
-        IUndoRedoDictionary<TKey, TValue> IUndoRedoDictionary<TKey, TValue>.Update(TKey key, Func<TKey, TValue, TValue> valueFactory)
+        public IUndoRedoDictionary<TKey, TValue> Update(TKey key, Func<TKey, TValue, TValue> valueFactory)
         {
             var u = _undoStack.Push(_persistentDictionary);
             return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.Update(key, valueFactory), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
@@ -118,57 +115,37 @@ namespace PDS.Implementation.UndoRedo
             return false;
         }
 
-        IUndoRedoDataStructure<KeyValuePair<TKey, TValue>, IUndoRedoDictionary<TKey, TValue>> 
-            IPersistentDataStructure<KeyValuePair<TKey, TValue>, IUndoRedoDataStructure<KeyValuePair<TKey, TValue>, IUndoRedoDictionary<TKey, TValue>>>.AddRange(IEnumerable<KeyValuePair<TKey, TValue>> items)
-        {
-            var u = _undoStack.Push(_persistentDictionary);
-            return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.AddRange(items), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
-        }
+        IUndoRedoDataStructure<KeyValuePair<TKey, TValue>, IUndoRedoDictionary<TKey, TValue>>
+            IPersistentDataStructure<KeyValuePair<TKey, TValue>, IUndoRedoDataStructure<KeyValuePair<TKey, TValue>,
+                IUndoRedoDictionary<TKey, TValue>>>.AddRange(IEnumerable<KeyValuePair<TKey, TValue>> items) =>
+            AddRange(items);
 
-        IUndoRedoDictionary<TKey, TValue> IUndoRedoDictionary<TKey, TValue>.Clear()
+        public IUndoRedoDictionary<TKey, TValue> Clear()
         {
             var u = _undoStack.Push(_persistentDictionary);
             return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.Clear(), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
         }
 
-        IUndoRedoDataStructure<KeyValuePair<TKey, TValue>, IUndoRedoDictionary<TKey, TValue>> 
-            IPersistentDataStructure<KeyValuePair<TKey, TValue>, IUndoRedoDataStructure<KeyValuePair<TKey, TValue>, IUndoRedoDictionary<TKey, TValue>>>.AddRange(IReadOnlyCollection<KeyValuePair<TKey, TValue>> items)
-        {
-            var u = _undoStack.Push(_persistentDictionary);
-            return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.AddRange(items), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
-        }
+        IUndoRedoDataStructure<KeyValuePair<TKey, TValue>, IUndoRedoDictionary<TKey, TValue>>
+            IPersistentDataStructure<KeyValuePair<TKey, TValue>, IUndoRedoDataStructure<KeyValuePair<TKey, TValue>,
+                IUndoRedoDictionary<TKey, TValue>>>.AddRange(IReadOnlyCollection<KeyValuePair<TKey, TValue>> items) =>
+            AddRange(items);
 
-        IUndoRedoDataStructure<KeyValuePair<TKey, TValue>, IUndoRedoDictionary<TKey, TValue>> 
-            IPersistentDataStructure<KeyValuePair<TKey, TValue>, IUndoRedoDataStructure<KeyValuePair<TKey, TValue>, IUndoRedoDictionary<TKey, TValue>>>.Clear()
-        {
-            var u = _undoStack.Push(_persistentDictionary);
-            return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.Clear(), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
-        }
+        IUndoRedoDataStructure<KeyValuePair<TKey, TValue>, IUndoRedoDictionary<TKey, TValue>>
+            IPersistentDataStructure<KeyValuePair<TKey, TValue>, IUndoRedoDataStructure<KeyValuePair<TKey, TValue>,
+                IUndoRedoDictionary<TKey, TValue>>>.Clear() => Clear();
 
-        IUndoRedoDataStructure<KeyValuePair<TKey, TValue>, IUndoRedoDictionary<TKey, TValue>> 
-            IPersistentDataStructure<KeyValuePair<TKey, TValue>, IUndoRedoDataStructure<KeyValuePair<TKey, TValue>, IUndoRedoDictionary<TKey, TValue>>>.Add(KeyValuePair<TKey, TValue> value)
-        {
-            var u = _undoStack.Push(_persistentDictionary);
-            return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.Add(value), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
-        }
+        IUndoRedoDataStructure<KeyValuePair<TKey, TValue>, IUndoRedoDictionary<TKey, TValue>>
+            IPersistentDataStructure<KeyValuePair<TKey, TValue>, IUndoRedoDataStructure<KeyValuePair<TKey, TValue>,
+                IUndoRedoDictionary<TKey, TValue>>>.Add(KeyValuePair<TKey, TValue> value) => Add(value.Key, value.Value);
 
-        IPersistentDictionary<TKey, TValue> IPersistentDictionary<TKey, TValue>.AddRange(IEnumerable<KeyValuePair<TKey, TValue>> pairs)
-        {
-            var u = _undoStack.Push(_persistentDictionary);
-            return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.AddRange(pairs), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
-        }
+        IPersistentDictionary<TKey, TValue> IPersistentDictionary<TKey, TValue>.AddRange(
+            IEnumerable<KeyValuePair<TKey, TValue>> pairs) => AddRange(pairs);
 
-        IPersistentDictionary<TKey, TValue> IPersistentDictionary<TKey, TValue>.RemoveRange(IEnumerable<TKey> keys)
-        {
-            var u = _undoStack.Push(_persistentDictionary);
-            return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.RemoveRange(keys), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
-        }
+        IPersistentDictionary<TKey, TValue> IPersistentDictionary<TKey, TValue>.RemoveRange(IEnumerable<TKey> keys) =>
+            RemoveRange(keys);
 
-        IPersistentDictionary<TKey, TValue> IPersistentDictionary<TKey, TValue>.Remove(TKey key)
-        {
-            var u = _undoStack.Push(_persistentDictionary);
-            return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.Remove(key), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
-        }
+        IPersistentDictionary<TKey, TValue> IPersistentDictionary<TKey, TValue>.Remove(TKey key) => Remove(key);
 
         public bool TryRemove(TKey key, out IPersistentDictionary<TKey, TValue> newVersion)
         {
@@ -183,114 +160,63 @@ namespace PDS.Implementation.UndoRedo
             return false;
         }
 
-        IPersistentDictionary<TKey, TValue> IPersistentDictionary<TKey, TValue>.SetItem(TKey key, TValue value)
-        {
-            var u = _undoStack.Push(_persistentDictionary);
-            return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.SetItem(key, value), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
-        }
+        IPersistentDictionary<TKey, TValue> IPersistentDictionary<TKey, TValue>.SetItem(TKey key, TValue value) =>
+            SetItem(key, value);
 
-        IPersistentDictionary<TKey, TValue> IPersistentDictionary<TKey, TValue>.SetItems(IEnumerable<KeyValuePair<TKey, TValue>> items)
-        {
-            var u = _undoStack.Push(_persistentDictionary);
-            return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.SetItems(items), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
-        }
+        IPersistentDictionary<TKey, TValue> IPersistentDictionary<TKey, TValue>.SetItems(
+            IEnumerable<KeyValuePair<TKey, TValue>> items) => SetItems(items);
 
-        IPersistentDictionary<TKey, TValue> IPersistentDictionary<TKey, TValue>.Clear()
-        {
-            var u = _undoStack.Push(_persistentDictionary);
-            return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.Clear(), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
-        }
+        IPersistentDictionary<TKey, TValue> IPersistentDictionary<TKey, TValue>.Clear() => Clear();
 
-        IPersistentDictionary<TKey, TValue> IPersistentDictionary<TKey, TValue>.Add(TKey key, TValue value)
-        {
-            var u = _undoStack.Push(_persistentDictionary);
-            return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.Add(key, value), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
-        }
+        IPersistentDictionary<TKey, TValue> IPersistentDictionary<TKey, TValue>.Add(TKey key, TValue value) =>
+            Add(key, value);
 
-        IPersistentDictionary<TKey, TValue> IPersistentDictionary<TKey, TValue>.AddOrUpdate(TKey key, TValue value)
-        {
-            var u = _undoStack.Push(_persistentDictionary);
-            return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.AddOrUpdate(key, value), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
-        }
+        IPersistentDictionary<TKey, TValue> IPersistentDictionary<TKey, TValue>.AddOrUpdate(TKey key, TValue value) =>
+            AddOrUpdate(key, value);
 
-        IPersistentDictionary<TKey, TValue> IPersistentDictionary<TKey, TValue>.Update(TKey key, Func<TKey, TValue, TValue> valueFactory)
-        {
-            var u = _undoStack.Push(_persistentDictionary);
-            return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.Update(key, valueFactory), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
-        }
+        IPersistentDictionary<TKey, TValue> IPersistentDictionary<TKey, TValue>.Update(TKey key,
+            Func<TKey, TValue, TValue> valueFactory) => Update(key, valueFactory);
 
         public bool TryAdd(TKey key, TValue value, out IPersistentDictionary<TKey, TValue> newVersion)
         {
             return ((IUndoRedoDictionary<TKey, TValue>)this).TryAdd(key, value, out newVersion);
         }
 
-        IImmutableDictionary<TKey, TValue> IImmutableDictionary<TKey, TValue>.Add(TKey key, TValue value)
-        {
-            var u = _undoStack.Push(_persistentDictionary);
-            return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.Add(key, value), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
-        }
+        IImmutableDictionary<TKey, TValue> IImmutableDictionary<TKey, TValue>.Add(TKey key, TValue value) =>
+            Add(key, value);
 
-        IImmutableDictionary<TKey, TValue> IImmutableDictionary<TKey, TValue>.AddRange(IEnumerable<KeyValuePair<TKey, TValue>> pairs)
-        {
-            var u = _undoStack.Push(_persistentDictionary);
-            return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.AddRange(pairs), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
-        }
+        IImmutableDictionary<TKey, TValue> IImmutableDictionary<TKey, TValue>.AddRange(
+            IEnumerable<KeyValuePair<TKey, TValue>> pairs) => AddRange(pairs);
 
-        IImmutableDictionary<TKey, TValue> IImmutableDictionary<TKey, TValue>.Clear()
-        {
-            var u = _undoStack.Push(_persistentDictionary);
-            return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.Clear(), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
-        }
+        IImmutableDictionary<TKey, TValue> IImmutableDictionary<TKey, TValue>.Clear() => Clear();
 
         public bool Contains(KeyValuePair<TKey, TValue> pair) => _persistentDictionary.Contains(pair);
 
-        IImmutableDictionary<TKey, TValue> IImmutableDictionary<TKey, TValue>.Remove(TKey key)
-        {
-            var u = _undoStack.Push(_persistentDictionary);
-            return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.Remove(key), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
-        }
+        IImmutableDictionary<TKey, TValue> IImmutableDictionary<TKey, TValue>.Remove(TKey key) => Remove(key);
 
-        IImmutableDictionary<TKey, TValue> IImmutableDictionary<TKey, TValue>.RemoveRange(IEnumerable<TKey> keys)
-        {
-            var u = _undoStack.Push(_persistentDictionary);
-            return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.RemoveRange(keys), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
-        }
+        IImmutableDictionary<TKey, TValue> IImmutableDictionary<TKey, TValue>.RemoveRange(IEnumerable<TKey> keys) =>
+            RemoveRange(keys);
 
-        IImmutableDictionary<TKey, TValue> IImmutableDictionary<TKey, TValue>.SetItem(TKey key, TValue value)
-        {
-            var u = _undoStack.Push(_persistentDictionary);
-            return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.SetItem(key, value), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
-        }
+        IImmutableDictionary<TKey, TValue> IImmutableDictionary<TKey, TValue>.SetItem(TKey key, TValue value) =>
+            SetItem(key, value);
 
-        IImmutableDictionary<TKey, TValue> IImmutableDictionary<TKey, TValue>.SetItems(IEnumerable<KeyValuePair<TKey, TValue>> items)
-        {
-            var u = _undoStack.Push(_persistentDictionary);
-            return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.SetItems(items), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
-        }
+        IImmutableDictionary<TKey, TValue> IImmutableDictionary<TKey, TValue>.SetItems(
+            IEnumerable<KeyValuePair<TKey, TValue>> items) => SetItems(items);
 
         public bool TryGetKey(TKey equalKey, out TKey actualKey) =>
             _persistentDictionary.TryGetKey(equalKey, out actualKey);
 
-        IPersistentDictionary<TKey, TValue> 
-            IPersistentDataStructure<KeyValuePair<TKey, TValue>, IPersistentDictionary<TKey, TValue>>.AddRange(IEnumerable<KeyValuePair<TKey, TValue>> items)
-        {
-            var u = _undoStack.Push(_persistentDictionary);
-            return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.AddRange(items), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
-        }
+        IPersistentDictionary<TKey, TValue>
+            IPersistentDataStructure<KeyValuePair<TKey, TValue>, IPersistentDictionary<TKey, TValue>>.AddRange(
+                IEnumerable<KeyValuePair<TKey, TValue>> items) => AddRange(items);
 
-        IPersistentDictionary<TKey, TValue> 
-            IPersistentDataStructure<KeyValuePair<TKey, TValue>, IPersistentDictionary<TKey, TValue>>.AddRange(IReadOnlyCollection<KeyValuePair<TKey, TValue>> items)
-        {
-            var u = _undoStack.Push(_persistentDictionary);
-            return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.AddRange(items), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
-        }
+        IPersistentDictionary<TKey, TValue>
+            IPersistentDataStructure<KeyValuePair<TKey, TValue>, IPersistentDictionary<TKey, TValue>>.AddRange(
+                IReadOnlyCollection<KeyValuePair<TKey, TValue>> items) => AddRange(items);
 
-        IPersistentDictionary<TKey, TValue> 
-            IPersistentDataStructure<KeyValuePair<TKey, TValue>, IPersistentDictionary<TKey, TValue>>.Clear()
-        {
-            var u = _undoStack.Push(_persistentDictionary);
-            return new UndoRedoDictionary<TKey, TValue>(_persistentDictionary.Clear(), u, PersistentStack<IPersistentDictionary<TKey, TValue>>.Empty);
-        }
+        IPersistentDictionary<TKey, TValue>
+            IPersistentDataStructure<KeyValuePair<TKey, TValue>, IPersistentDictionary<TKey, TValue>>.Clear() =>
+            Clear();
 
         public bool IsEmpty => _persistentDictionary.IsEmpty;
         public bool ContainsKey(TKey key) => _persistentDictionary.ContainsKey(key);

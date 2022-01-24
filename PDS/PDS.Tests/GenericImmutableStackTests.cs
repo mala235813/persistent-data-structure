@@ -13,7 +13,8 @@ namespace PDS.Tests
     public class GenericImmutableStackTests
     {
         public static Type[] GenericTestTypes = { typeof(PersistentStack<>), typeof(PersistentLinkedList<>), typeof(UndoRedoStack<>), typeof(UndoRedoLinkedList<>) };
-        public static Type[] UndoRedoTestTypes = { typeof(UndoRedoStack<>), typeof(UndoRedoLinkedList<>) }; 
+        public static Type[] GenericStackTestTypes = { typeof(PersistentStack<>), typeof(UndoRedoStack<>) };
+        public static Type[] UndoRedoTestTypes = { typeof(UndoRedoStack<>), typeof(UndoRedoLinkedList<>) };
         
         [Test(Description = "Test IImmutableStack implementation")]
         [TestCaseSource(nameof(GenericTestTypes))]
@@ -45,60 +46,73 @@ namespace PDS.Tests
             IUndoRedoStackTest(stack);
         }
         
+        [Test(Description = "Test IUndoRedoStack implementation")]
+        [TestCaseSource(nameof(GenericStackTestTypes))]
+        public void ImplementationIStackTest(Type stackType)
+        {
+            var classType = stackType.MakeGenericType(typeof(int));
+            var stack = (IPersistentStack<int>)Activator.CreateInstance(classType)!;
+
+            IPeekPopStackTest(stack);
+        }
+        
+        
+        
         private void ImmutableStackTest(IImmutableStack<int> a)
         {
-            a.IsEmpty.Should().Be(true);
+            a.IsEmpty.Should().BeTrue();
+            
             var b = a.Push(0);
-
-            a.IsEmpty.Should().Be(true);
-            b.IsEmpty.Should().Be(false);
+            
+            a.IsEmpty.Should().BeTrue();
+            b.IsEmpty.Should().BeFalse();
             b.Peek().Should().Be(0);
 
             var c = b.Pop();
         
-            b.IsEmpty.Should().Be(false);
+            b.IsEmpty.Should().BeFalse();
             b.Peek().Should().Be(0);
-            c.IsEmpty.Should().Be(true);
+            c.IsEmpty.Should().BeTrue();
             
             var d = b.Push(1);
         
-            b.IsEmpty.Should().Be(false);
+            b.IsEmpty.Should().BeFalse();
             b.Peek().Should().Be(0);
 
-            d.IsEmpty.Should().Be(false);
+            d.IsEmpty.Should().BeFalse();
             d.Peek().Should().Be(1);
 
-            d.Clear().IsEmpty.Should().Be(true);
+            d.Clear().IsEmpty.Should().BeTrue();
         }
         
         private void IPersistentStackTests(IPersistentStack<int> a)
         {
-            a.IsEmpty.Should().Be(true);
+            a.IsEmpty.Should().BeTrue();
             a.Count.Should().Be(0);
-            
+
             var b = a.Push(0);
 
             b.Count.Should().Be(1);
  
-            a.IsEmpty.Should().Be(true);
-            b.IsEmpty.Should().Be(false);
+            a.IsEmpty.Should().BeTrue();
+            b.IsEmpty.Should().BeFalse();
             b.Peek().Should().Be(0);
 
             var c = b.Pop();
         
-            b.IsEmpty.Should().Be(false);
+            b.IsEmpty.Should().BeFalse();
             b.Peek().Should().Be(0);
-            c.IsEmpty.Should().Be(true);
+            c.IsEmpty.Should().BeTrue();
             
             var d = b.Push(1);
         
-            b.IsEmpty.Should().Be(false);
+            b.IsEmpty.Should().BeFalse();
             b.Peek().Should().Be(0);
 
-            d.IsEmpty.Should().Be(false);
+            d.IsEmpty.Should().BeFalse();
             d.Peek().Should().Be(1);
 
-            d.Clear().IsEmpty.Should().Be(true);
+            d.Clear().IsEmpty.Should().BeTrue();
         }
         
         private void IUndoRedoStackTest(IUndoRedoStack<int> a)
@@ -146,6 +160,18 @@ namespace PDS.Tests
             d.Peek().Should().Be(1);
 
             d.Clear().IsEmpty.Should().Be(true);
+        }
+
+        private void IPeekPopStackTest(IPersistentStack<int> a)
+        {
+            a.IsEmpty.Should().Be(true);
+            a.Count.Should().Be(0);
+
+            Action peek = () => a.Peek();
+            peek.Should().Throw<InvalidOperationException>().WithMessage("Empty stack");
+
+            Action pop = () => a.Pop();
+            pop.Should().Throw<InvalidOperationException>().WithMessage("Empty stack");
         }
     }
 }
