@@ -11,10 +11,19 @@ namespace PDS.Implementation.Collections
     {
         private IPersistentList<List<T>> _buckets;
 
+        public static PersistentSet<T> Empty { get; } = new();
+
         public PersistentSet(int count, IPersistentList<List<T>> buckets)
         {
             Count = count;
             _buckets = buckets;
+        }
+        
+        private PersistentSet()
+        {
+            Count = 0;
+            // TODO: persistent list
+            _buckets = null;
         }
 
         public int Count { get; }

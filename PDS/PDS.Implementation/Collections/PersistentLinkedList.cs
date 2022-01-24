@@ -23,6 +23,8 @@ namespace PDS.Implementation.Collections
         private readonly PersistentVersionStorage _versionStorage;
         private readonly VersionNode<T> _root;
 
+        public static PersistentLinkedList<T> Empty { get; } = new();
+        
         public PersistentLinkedList()
         {
             _versionStorage = new PersistentVersionStorage();

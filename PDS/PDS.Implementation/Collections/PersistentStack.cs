@@ -25,7 +25,7 @@ namespace PDS.Implementation.Collections
             Count = count;
         }
 
-        private PersistentStack() : this(default, null, 0)
+        public PersistentStack() : this(default, null, 0)
         {
         }
         

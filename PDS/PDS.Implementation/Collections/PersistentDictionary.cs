@@ -17,7 +17,16 @@ namespace PDS.Implementation.Collections
             _buckets = buckets;
         }
 
+        private PersistentDictionary()
+        {
+            Count = 0;
+            //TODO: List realisation 
+            _buckets = null;
+        }   
+
         public int Count { get; }
+        
+        public static PersistentDictionary<TKey, TValue> Empty => new();
 
         private (int index, List<KeyValuePair<TKey, TValue>> bucket) GetBucket(TKey key)
         {

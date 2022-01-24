@@ -20,6 +20,8 @@ namespace PDS.Collections
         IPersistentLinkedList<T> RemoveLast();
 
         bool Contains(T item);
+        
+        new bool IsEmpty { get; }
 
         T Get(int index);
 
@@ -46,5 +48,7 @@ namespace PDS.Collections
         IPersistentLinkedList<T> Replace(T oldValue, T newValue, IEqualityComparer<T>? equalityComparer);
 
         IPersistentLinkedList<T> SetItem(int index, T value);
+
+        new IPersistentLinkedList<T> Clear();
     }
 }
