@@ -21,25 +21,25 @@ namespace PDS.Benchmark
             [Params(10, 1000 )]
             public int Count { get; set; }
 
-            [Benchmark(Baseline = true, Description = "ImmutableList<T>")]
+            [Benchmark(Baseline = true, Description = "ImmutableList")]
             public ImmutableList<int> List()
             {
                 return ImmutableList.CreateRange(Enumerable.Range(0, Count));
             }
 
-            [Benchmark(Description = "ImmutableArray<T>")]
+            [Benchmark(Description = "ImmutableArray")]
             public ImmutableArray<int> Array()
             {
                 return ImmutableArray.CreateRange(Enumerable.Range(0, Count));
             }
 
-            [Benchmark(Description = "ImmutableTreeList<T>")]
+            [Benchmark(Description = "ImmutableTreeList")]
             public ImmutableTreeList<int> TreeList()
             {
                 return ImmutableTreeList.CreateRange(Enumerable.Range(0, Count));
             }
             
-            [Benchmark(Description = "IPersistentLinkedList<T>")]
+            [Benchmark(Description = "IPersistentLinkedList")]
             public IPersistentLinkedList<int> LinkedList()
             {
                 return new PersistentLinkedList<int>().AddRange(Enumerable.Range(0, Count));
