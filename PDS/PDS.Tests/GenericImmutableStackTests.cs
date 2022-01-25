@@ -55,9 +55,7 @@ namespace PDS.Tests
 
             IPeekPopStackTest(stack);
         }
-        
-        
-        
+
         private void ImmutableStackTest(IImmutableStack<int> a)
         {
             a.IsEmpty.Should().BeTrue();

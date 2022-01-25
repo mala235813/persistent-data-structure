@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Collections.ObjectModel;
 using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
@@ -85,16 +82,20 @@ namespace PDS.Tests
 
             var f = a.AddRange(Enumerable.Range(0, 1));
             f.Count.Should().Be(1);
+            
+            var f2 = a.AddRange(Enumerable.Range(0, 1).ToArray());
+            f2.Count.Should().Be(1);
 
             f.Get(0).Should().Be(0);
 
             var g = a.AddFirst(0);
             g.Count.Should().Be(1);
+
+            var g2 = g.AddFirst(1);
+            g2.Count.Should().Be(2);
             
             var h = a.AddLast(0);
             h.Count.Should().Be(1);
-
-            // h.Contains(0).Should().BeTrue();
 
             var j = h.SetItem(0, 5);
             j.First.Should().Be(5);
@@ -104,6 +105,12 @@ namespace PDS.Tests
             
             Action setItemOutOfRange = () => h.SetItem(2, 2);
             setItemOutOfRange.Should().Throw<IndexOutOfRangeException>();
+
+            var ala = a.AddRange(Enumerable.Range(0, 100));
+            var ala1 = ala.SetItem(0, 5);
+            ala1.First.Should().Be(5);
+            var ala2 = ala.RemoveAt(0);
+            ala2.Count.Should().Be(99);
         }
     }
 }

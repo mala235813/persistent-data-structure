@@ -44,43 +44,43 @@ namespace PDS.Implementation.UndoRedo
             return new UndoRedoSet<T>(_persistentSet.Add(value), u, PersistentStack<IPersistentSet<T>>.Empty);
         }
 
-        IUndoRedoSet<T> IUndoRedoSet<T>.Clear()
+        public IUndoRedoSet<T> Clear()
         {
             var u = _undoStack.Push(_persistentSet);
             return new UndoRedoSet<T>(_persistentSet.Clear(), u, PersistentStack<IPersistentSet<T>>.Empty);
         }
 
-        IUndoRedoSet<T> IUndoRedoSet<T>.Except(IEnumerable<T> other)
+        public IUndoRedoSet<T> Except(IEnumerable<T> other)
         {
             var u = _undoStack.Push(_persistentSet);
             return new UndoRedoSet<T>(_persistentSet.Except(other), u, PersistentStack<IPersistentSet<T>>.Empty);
         }
 
-        IUndoRedoSet<T> IUndoRedoSet<T>.Intersect(IEnumerable<T> other)
+        public IUndoRedoSet<T> Intersect(IEnumerable<T> other)
         {
             var u = _undoStack.Push(_persistentSet);
             return new UndoRedoSet<T>(_persistentSet.Intersect(other), u, PersistentStack<IPersistentSet<T>>.Empty);
         }
 
-        IUndoRedoSet<T> IUndoRedoSet<T>.Remove(T value)
+        public IUndoRedoSet<T> Remove(T value)
         {
             var u = _undoStack.Push(_persistentSet);
             return new UndoRedoSet<T>(_persistentSet.Remove(value), u, PersistentStack<IPersistentSet<T>>.Empty);
         }
 
-        IUndoRedoSet<T> IUndoRedoSet<T>.SymmetricExcept(IEnumerable<T> other)
+        public IUndoRedoSet<T> SymmetricExcept(IEnumerable<T> other)
         {
             var u = _undoStack.Push(_persistentSet);
             return new UndoRedoSet<T>(_persistentSet.SymmetricExcept(other), u, PersistentStack<IPersistentSet<T>>.Empty);
         }
 
-        IUndoRedoSet<T> IUndoRedoSet<T>.Union(IEnumerable<T> other)
+        public IUndoRedoSet<T> Union(IEnumerable<T> other)
         {
             var u = _undoStack.Push(_persistentSet);
             return new UndoRedoSet<T>(_persistentSet.Union(other), u, PersistentStack<IPersistentSet<T>>.Empty);
         }
 
-        IUndoRedoSet<T> IUndoRedoSet<T>.Add(T value)
+        public IUndoRedoSet<T> Add(T value)
         {
             var u = _undoStack.Push(_persistentSet);
             return new UndoRedoSet<T>(_persistentSet.Add(value), u, PersistentStack<IPersistentSet<T>>.Empty);
@@ -100,60 +100,24 @@ namespace PDS.Implementation.UndoRedo
             return new UndoRedoSet<T>(_persistentSet.AddRange(items), u, PersistentStack<IPersistentSet<T>>.Empty);
         }
 
-        IUndoRedoDataStructure<T, IUndoRedoSet<T>> 
-            IPersistentDataStructure<T, IUndoRedoDataStructure<T, IUndoRedoSet<T>>>.Clear()
-        {
-            var u = _undoStack.Push(_persistentSet);
-            return new UndoRedoSet<T>(_persistentSet.Clear(), u, PersistentStack<IPersistentSet<T>>.Empty);
-        }
+        IUndoRedoDataStructure<T, IUndoRedoSet<T>>
+            IPersistentDataStructure<T, IUndoRedoDataStructure<T, IUndoRedoSet<T>>>.Clear() => Clear();
 
-        IPersistentSet<T> IPersistentSet<T>.Clear()
-        {
-            var u = _undoStack.Push(_persistentSet);
-            return new UndoRedoSet<T>(_persistentSet.Clear(), u, PersistentStack<IPersistentSet<T>>.Empty);
-        }
+        IPersistentSet<T> IPersistentSet<T>.Clear() => Clear();
 
-        IPersistentSet<T> IPersistentSet<T>.Except(IEnumerable<T> other)
-        {
-            var u = _undoStack.Push(_persistentSet);
-            return new UndoRedoSet<T>(_persistentSet.Except(other), u, PersistentStack<IPersistentSet<T>>.Empty);
-        }
+        IPersistentSet<T> IPersistentSet<T>.Except(IEnumerable<T> other) => Except(other);
 
-        IPersistentSet<T> IPersistentSet<T>.Intersect(IEnumerable<T> other)
-        {
-            var u = _undoStack.Push(_persistentSet);
-            return new UndoRedoSet<T>(_persistentSet.Intersect(other), u, PersistentStack<IPersistentSet<T>>.Empty);
-        }
+        IPersistentSet<T> IPersistentSet<T>.Intersect(IEnumerable<T> other) => Intersect(other);
 
-        IPersistentSet<T> IPersistentSet<T>.Remove(T value)
-        {
-            var u = _undoStack.Push(_persistentSet);
-            return new UndoRedoSet<T>(_persistentSet.Remove(value), u, PersistentStack<IPersistentSet<T>>.Empty);
-        }
+        IPersistentSet<T> IPersistentSet<T>.Remove(T value) => Remove(value);
 
-        IPersistentSet<T> IPersistentSet<T>.SymmetricExcept(IEnumerable<T> other)
-        {
-            var u = _undoStack.Push(_persistentSet);
-            return new UndoRedoSet<T>(_persistentSet.SymmetricExcept(other), u, PersistentStack<IPersistentSet<T>>.Empty);
-        }
+        IPersistentSet<T> IPersistentSet<T>.SymmetricExcept(IEnumerable<T> other) => SymmetricExcept(other);
 
-        IPersistentSet<T> IPersistentSet<T>.Union(IEnumerable<T> other)
-        {
-            var u = _undoStack.Push(_persistentSet);
-            return new UndoRedoSet<T>(_persistentSet.Union(other), u, PersistentStack<IPersistentSet<T>>.Empty);
-        }
+        IPersistentSet<T> IPersistentSet<T>.Union(IEnumerable<T> other) => Union(other);
 
-        IPersistentSet<T> IPersistentSet<T>.Add(T value)
-        {
-            var u = _undoStack.Push(_persistentSet);
-            return new UndoRedoSet<T>(_persistentSet.Add(value), u, PersistentStack<IPersistentSet<T>>.Empty);;
-        }
+        IPersistentSet<T> IPersistentSet<T>.Add(T value) => Add(value);
 
-        IImmutableSet<T> IImmutableSet<T>.Clear()
-        {
-            var u = _undoStack.Push(_persistentSet);
-            return new UndoRedoSet<T>(_persistentSet.Clear(), u, PersistentStack<IPersistentSet<T>>.Empty);
-        }
+        IImmutableSet<T> IImmutableSet<T>.Clear() => Clear();
 
         bool IImmutableSet<T>.Contains(T value) => ((IImmutableSet<T>)_persistentSet).Contains(value);
 
@@ -169,17 +133,9 @@ namespace PDS.Implementation.UndoRedo
 
         bool IReadOnlySet<T>.SetEquals(IEnumerable<T> other) => ((IReadOnlySet<T>)_persistentSet).SetEquals(other);
 
-        IImmutableSet<T> IImmutableSet<T>.Except(IEnumerable<T> other)
-        {
-            var u = _undoStack.Push(_persistentSet);
-            return new UndoRedoSet<T>(_persistentSet.Except(other), u, PersistentStack<IPersistentSet<T>>.Empty);
-        }
+        IImmutableSet<T> IImmutableSet<T>.Except(IEnumerable<T> other) => Except(other);
 
-        IImmutableSet<T> IImmutableSet<T>.Intersect(IEnumerable<T> other)
-        {
-            var u = _undoStack.Push(_persistentSet);
-            return new UndoRedoSet<T>(_persistentSet.Intersect(other), u, PersistentStack<IPersistentSet<T>>.Empty);
-        }
+        IImmutableSet<T> IImmutableSet<T>.Intersect(IEnumerable<T> other) => Intersect(other);
 
         bool IReadOnlySet<T>.Contains(T item) => ((IReadOnlySet<T>)_persistentSet).Contains(item);
         
@@ -198,28 +154,16 @@ namespace PDS.Implementation.UndoRedo
         bool IImmutableSet<T>.Overlaps(IEnumerable<T> other) => 
             ((IImmutableSet<T>)_persistentSet).Overlaps(other);
 
-        IImmutableSet<T> IImmutableSet<T>.Remove(T value)
-        {
-            var u = _undoStack.Push(_persistentSet);
-            return new UndoRedoSet<T>(_persistentSet.Remove(value), u, PersistentStack<IPersistentSet<T>>.Empty);
-        }
+        IImmutableSet<T> IImmutableSet<T>.Remove(T value) => Remove(value);
 
         bool IImmutableSet<T>.SetEquals(IEnumerable<T> other) => ((IImmutableSet<T>)_persistentSet).SetEquals(other);
 
-        IImmutableSet<T> IImmutableSet<T>.SymmetricExcept(IEnumerable<T> other)
-        {
-            var u = _undoStack.Push(_persistentSet);
-            return new UndoRedoSet<T>(_persistentSet.SymmetricExcept(other), u, PersistentStack<IPersistentSet<T>>.Empty);
-        }
+        IImmutableSet<T> IImmutableSet<T>.SymmetricExcept(IEnumerable<T> other) => SymmetricExcept(other);
 
         public bool TryGetValue(T equalValue, out T actualValue) =>
             _persistentSet.TryGetValue(equalValue, out actualValue);
 
-        IImmutableSet<T> IImmutableSet<T>.Union(IEnumerable<T> other)
-        {
-            var u = _undoStack.Push(_persistentSet);
-            return new UndoRedoSet<T>(_persistentSet.Union(other), u, PersistentStack<IPersistentSet<T>>.Empty);
-        }
+        IImmutableSet<T> IImmutableSet<T>.Union(IEnumerable<T> other) => Union(other);
 
         IUndoRedoDataStructure<T, IUndoRedoSet<T>> 
             IPersistentDataStructure<T, IUndoRedoDataStructure<T, IUndoRedoSet<T>>>.Add(T value)
@@ -240,17 +184,9 @@ namespace PDS.Implementation.UndoRedo
             return new UndoRedoSet<T>(_persistentSet.AddRange(items), u, PersistentStack<IPersistentSet<T>>.Empty);
         }
 
-        IImmutableSet<T> IImmutableSet<T>.Add(T value)
-        {
-            var u = _undoStack.Push(_persistentSet);
-            return new UndoRedoSet<T>(_persistentSet.Add(value), u, PersistentStack<IPersistentSet<T>>.Empty);
-        }
+        IImmutableSet<T> IImmutableSet<T>.Add(T value) => Add(value);
 
-        IPersistentSet<T> IPersistentDataStructure<T, IPersistentSet<T>>.Clear()
-        {
-            var u = _undoStack.Push(_persistentSet);
-            return new UndoRedoSet<T>(_persistentSet.Clear(), u, PersistentStack<IPersistentSet<T>>.Empty);
-        }
+        IPersistentSet<T> IPersistentDataStructure<T, IPersistentSet<T>>.Clear() => Clear();
 
         public bool IsEmpty => _persistentSet.IsEmpty;
         

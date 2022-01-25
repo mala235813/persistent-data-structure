@@ -278,7 +278,17 @@ namespace PDS.Implementation.UndoRedo
             return new UndoRedoLinkedList<T>(lastVersion, u, r);
         }
 
-        public bool TryRedo(out IUndoRedoDataStructure<T, IUndoRedoStack<T>> collection) => ((IUndoRedoLinkedList<T>)this).TryRedo(out collection);
+        bool IUndoRedo<IUndoRedoDataStructure<T, IUndoRedoStack<T>>>.TryRedo(out IUndoRedoDataStructure<T, IUndoRedoStack<T>> collection)
+        {
+            if (_redoStack.IsEmpty)
+            {
+                collection = this;
+                return false;
+            }
+
+            collection = (IUndoRedoDataStructure<T, IUndoRedoStack<T>>)Redo();
+            return true;
+        }
 
         public bool TryRedo(out IUndoRedoDataStructure<T, IUndoRedoLinkedList<T>> collection)
         {
@@ -297,7 +307,18 @@ namespace PDS.Implementation.UndoRedo
         public bool CanRedo => !_redoStack.IsEmpty;
         IUndoRedoDataStructure<T, IUndoRedoStack<T>> IUndoRedo<IUndoRedoDataStructure<T, IUndoRedoStack<T>>>.Undo() => (IUndoRedoDataStructure<T, IUndoRedoStack<T>>)Undo();
 
-        public bool TryUndo(out IUndoRedoDataStructure<T, IUndoRedoStack<T>> collection) => ((IUndoRedoLinkedList<T>)this).TryUndo(out collection);
+        bool IUndoRedo<IUndoRedoDataStructure<T, IUndoRedoStack<T>>>.TryUndo(
+            out IUndoRedoDataStructure<T, IUndoRedoStack<T>> collection)
+        {
+            if (_undoStack.IsEmpty)
+            {
+                collection = this;
+                return false;
+            }
+
+            collection = (IUndoRedoDataStructure<T, IUndoRedoStack<T>>)Undo();
+            return true;
+        }
 
         public IUndoRedoDataStructure<T, IUndoRedoLinkedList<T>> Undo()
         {
