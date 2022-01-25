@@ -13,9 +13,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: r-lib/actions/setup-r@v1
-      - name: Install packages
-        run:
-          Rscript -e "install.packages(c('tidyverse', 'showtext'))"
+#       - name: Install packages
+#         run:
+#           Rscript -e "install.packages(c('tidyverse', 'showtext'))"
       - name: Run bench
         run: dotnet run --project PDS.Benchmark.csproj -c Release --filter *RangeToList*
       - name: Render r plot file
