@@ -2,7 +2,9 @@ name: Render plots
 
 on:
   push:
-    # branches: [ main ]
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build:
@@ -23,9 +25,5 @@ jobs:
           pwd
       - uses: actions/upload-artifact@v2
         with:
-          name: barplot
-          path: ${{ github.workspace }}/PDS/PDS.Benchmark/BenchmarkDotNet.Artifacts/results/*RangeToList*barplot.png
-      - uses: actions/upload-artifact@v2
-        with:
-          name: boxplot
-          path: ${{ github.workspace }}/PDS/PDS.Benchmark/BenchmarkDotNet.Artifacts/results/*RangeToList*boxplot.png
+          name: plots
+          path: ${{ github.workspace }}/PDS/PDS.Benchmark/BenchmarkDotNet.Artifacts/results/*.png
