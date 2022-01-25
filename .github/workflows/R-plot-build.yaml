@@ -17,7 +17,7 @@ jobs:
         run:
           Rscript -e "install.packages(c('tidyverse', 'showtext'))"
       - name: Run bench
-        run: dotnet run --project PDS.Benchmark\PDS.Benchmark.csproj -c Release --filter *RangeToList*
+        run: dotnet run --project PDS.Benchmark.csproj -c Release --filter *RangeToList*
       - name: Render r plot file
         run: |
           cd ./BenchmarkDotNet.Artifacts/results/
@@ -25,4 +25,4 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: plots
-          path: *.png
+          path: path/to/artifact
