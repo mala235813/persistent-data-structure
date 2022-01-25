@@ -3,7 +3,7 @@
 namespace PDS.Collections
 {
     /// <summary>
-    /// Persistent queue
+    /// Persistent stack
     /// </summary>
     /// <typeparam name="T">Item type</typeparam>
     public interface IPersistentStack<T> : IPersistentDataStructure<T, IPersistentStack<T>>, IImmutableStack<T>

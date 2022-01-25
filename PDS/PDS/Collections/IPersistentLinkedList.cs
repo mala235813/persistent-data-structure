@@ -156,7 +156,11 @@ namespace PDS.Collections
         /// <param name="value"></param>
         /// <returns>New instance of persistent linked list</returns>
         IPersistentLinkedList<T> SetItem(int index, T value);
-
+        
+        /// <summary>
+        /// Clear persistent linked list
+        /// </summary>
+        /// <returns>Empty list</returns>
         new IPersistentLinkedList<T> Clear();
     }
 }

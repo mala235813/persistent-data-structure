@@ -77,7 +77,6 @@ namespace PDS.Collections
         /// <returns>New instance of persistent list</returns>
         new IPersistentList<T> RemoveRange(IEnumerable<T> items, IEqualityComparer<T>? equalityComparer);
 
-        
         /// <summary>
         /// Remove count items starting from given index
         /// </summary>
