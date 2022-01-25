@@ -20,7 +20,7 @@ namespace PDS.Implementation.Collections
             _buckets = buckets;
         }
         
-        private PersistentSet()
+        public PersistentSet()
         {
             Count = 0;
             var array = Enumerable.Range(0, InitialSize).Select(i => new List<T>()).ToArray();

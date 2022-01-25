@@ -18,7 +18,7 @@ namespace PDS.Implementation.Collections
             _buckets = buckets;
         }
 
-        private PersistentDictionary()
+        public PersistentDictionary()
         {
             Count = 0;
             var array = Enumerable.Range(0, InitialSize).Select(i => new List<KeyValuePair<TKey, TValue>>()).ToArray();
@@ -157,12 +157,32 @@ namespace PDS.Implementation.Collections
 
         public IPersistentDictionary<TKey, TValue> Update(TKey key, Func<TKey, TValue, TValue> valueFactory)
         {
-            throw new NotImplementedException();
+            var (_, bucket) = GetBucket(key);
+            foreach (var (k, v) in bucket)
+            {
+                if (k.Equals(key))
+                {
+                    return Set(k, valueFactory(k, v));
+                }
+            }
+
+            throw new KeyNotFoundException(key.ToString());
         }
 
         public bool TryAdd(TKey key, TValue value, out IPersistentDictionary<TKey, TValue> newVersion)
         {
-            throw new NotImplementedException();
+            var (_, bucket) = GetBucket(key);
+            foreach (var (k, v) in bucket)
+            {
+                if (k.Equals(key))
+                {
+                    newVersion = this;
+                    return false;
+                }
+            }
+
+            newVersion = Set(key, value);
+            return true;
         }
 
         public bool Contains(KeyValuePair<TKey, TValue> pair)
@@ -250,7 +270,9 @@ namespace PDS.Implementation.Collections
 
         public bool ContainsKey(TKey key) => Contains(key);
 
+#pragma warning disable CS8767
         public bool TryGetValue(TKey key, out TValue? value)
+#pragma warning restore CS8767
         {
             var (_, bucket) = GetBucket(key);
             foreach (var (k, v) in bucket)
