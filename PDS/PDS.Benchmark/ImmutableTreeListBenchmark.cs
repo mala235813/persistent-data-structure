@@ -18,7 +18,7 @@ namespace PDS.Benchmark
         [JsonExporter("-custom", indentJson: true, excludeMeasurements: true)]
         public class RangeToList
         {
-            [Params(10, 1000 )]
+            [Params(10)]
             public int Count { get; set; }
 
             [Benchmark(Baseline = true, Description = "ImmutableList")]
