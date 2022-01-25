@@ -24,7 +24,7 @@ namespace PDS.Implementation.Collections
         private readonly VersionNode<T> _root;
 
         public static PersistentLinkedList<T> Empty { get; } = new();
-        
+
         public PersistentLinkedList()
         {
             _versionStorage = new PersistentVersionStorage();
@@ -57,7 +57,8 @@ namespace PDS.Implementation.Collections
         {
             if (index < 0 || index >= Count)
             {
-                throw new IndexOutOfRangeException();
+                throw new ArgumentOutOfRangeException(
+                    $"{nameof(index)} is out of range: {index}, expected to be > 0 and < {Count}");
             }
 
             var indFatNode = TraverseRight(index);
@@ -117,7 +118,8 @@ namespace PDS.Implementation.Collections
         {
             if (index < 0 || index > Count)
             {
-                throw new IndexOutOfRangeException();
+                throw new ArgumentOutOfRangeException(
+                    $"{nameof(index)} is out of range: {index}, expected to be > 0 and < {Count}");
             }
 
             if (index == Count)
@@ -163,7 +165,8 @@ namespace PDS.Implementation.Collections
         {
             if (index < 0 || index > Count)
             {
-                throw new IndexOutOfRangeException();
+                throw new ArgumentOutOfRangeException(
+                    $"{nameof(index)} is out of range: {index}, expected to be > 0 and < {Count}");
             }
 
             var setFatNode = TraverseRight(index);
@@ -253,13 +256,13 @@ namespace PDS.Implementation.Collections
         {
             if (index < 0 || index >= Count)
             {
-                throw new ArgumentOutOfRangeException(nameof(index));
-            }
+                throw new ArgumentOutOfRangeException(
+                    $"{nameof(index)} is out of range: {index}, expected to be > 0 and < {Count}");            }
 
             if (count < 0 || index + count > Count)
             {
-                throw new ArgumentOutOfRangeException(nameof(count));
-            }
+                throw new ArgumentOutOfRangeException(
+                    $"{nameof(count)} is out of range: {count}, should be > 0 and {index} + {count}, expected to be > 0 and < {Count}");            }
 
             var i = index;
             foreach (var it in this.Skip(index).Take(count))

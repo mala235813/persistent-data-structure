@@ -146,7 +146,7 @@ namespace PDS.Implementation.UndoRedo
         IPersistentSet<T> IPersistentSet<T>.Add(T value)
         {
             var u = _undoStack.Push(_persistentSet);
-            return new UndoRedoSet<T>(_persistentSet.Add(value), u, PersistentStack<IPersistentSet<T>>.Empty);;
+            return new UndoRedoSet<T>(_persistentSet.Add(value), u, PersistentStack<IPersistentSet<T>>.Empty);
         }
 
         IImmutableSet<T> IImmutableSet<T>.Clear()

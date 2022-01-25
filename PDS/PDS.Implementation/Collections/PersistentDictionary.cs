@@ -250,7 +250,9 @@ namespace PDS.Implementation.Collections
 
         public bool ContainsKey(TKey key) => Contains(key);
 
+#pragma warning disable CS8767
         public bool TryGetValue(TKey key, out TValue? value)
+#pragma warning restore CS8767
         {
             var (_, bucket) = GetBucket(key);
             foreach (var (k, v) in bucket)

@@ -33,7 +33,7 @@ namespace PDS.Implementation.Collections
             _shift = shift;
             _root = root;
             _tail = tail;
-            _tailOffset = count - _tail.Child.Count;
+            _tailOffset = count - _tail.Count;
         }
 
         public int Count { get; }
@@ -42,7 +42,7 @@ namespace PDS.Implementation.Collections
         {
             if (index < 0 || index >= Count)
             {
-                throw new ArgumentException(
+                throw new ArgumentOutOfRangeException(
                     $"Index out of range: {index} should be greater then 0 and less then {Count}");
             }
 
@@ -53,7 +53,7 @@ namespace PDS.Implementation.Collections
         {
             if (index < 0 || index > Count)
             {
-                throw new ArgumentException(
+                throw new ArgumentOutOfRangeException(
                     $"Index out of range: {index} should be greater then 0 and less then {Count}");
             }
 
@@ -137,7 +137,7 @@ namespace PDS.Implementation.Collections
                 Count += delta;
                 offset += delta;
 
-                if (newList._tail.Count == BranchingFactor)
+                if (_tail.Count == BranchingFactor)
                 {
                     (_root, _shift) = CreateNewRoot();
                     _tail = new Node<T>();
@@ -149,9 +149,9 @@ namespace PDS.Implementation.Collections
 
         public PersistentList<T> Remove(int index)
         {
-            if (index < 0 || index > Count)
+            if (index < 0 || index >= Count)
             {
-                throw new ArgumentException(
+                throw new ArgumentOutOfRangeException(
                     $"Index out of range: {index} should be greater then 0 and less then {Count}");
             }
 
@@ -201,8 +201,11 @@ namespace PDS.Implementation.Collections
             {
                 newNode.Child[subIndex] = PushTail(level - Shift, parent.Child[subIndex], tail);
             }
+            else
+            {
+                newNode.Child.Add(NewPath(level - Shift, tail));
+            }
 
-            newNode.Child.Add(NewPath(level - Shift, tail));
             return newNode;
         }
 
@@ -288,7 +291,7 @@ namespace PDS.Implementation.Collections
         {
             throw new NotImplementedException();
         }
-        
+
         public IPersistentList<T> InsertRange(int index, IEnumerable<T> items)
         {
             throw new NotImplementedException();
@@ -304,10 +307,7 @@ namespace PDS.Implementation.Collections
             throw new NotImplementedException();
         }
 
-        IPersistentList<T> IPersistentList<T>.RemoveAt(int index)
-        {
-            throw new NotImplementedException();
-        }
+        IPersistentList<T> IPersistentList<T>.RemoveAt(int index) => Remove(index);
 
         public IPersistentList<T> RemoveRange(IEnumerable<T> items, IEqualityComparer<T>? equalityComparer)
         {
@@ -365,9 +365,11 @@ namespace PDS.Implementation.Collections
 
         IImmutableList<T> IImmutableList<T>.Add(T value) => Add(value);
 
-        IPersistentList<T> IPersistentDataStructure<T, IPersistentList<T>>.AddRange(IEnumerable<T> items) => AddRange(items);
+        IPersistentList<T> IPersistentDataStructure<T, IPersistentList<T>>.AddRange(IEnumerable<T> items) =>
+            AddRange(items);
 
-        IPersistentList<T> IPersistentDataStructure<T, IPersistentList<T>>.AddRange(IReadOnlyCollection<T> items) => AddRange(items);
+        IPersistentList<T> IPersistentDataStructure<T, IPersistentList<T>>.AddRange(IReadOnlyCollection<T> items) =>
+            AddRange(items);
 
         IPersistentList<T> IPersistentDataStructure<T, IPersistentList<T>>.Clear() => new PersistentList<T>();
 
@@ -375,7 +377,7 @@ namespace PDS.Implementation.Collections
 
         IPersistentList<T> IPersistentDataStructure<T, IPersistentList<T>>.Add(T value) => Add(value);
 
-        public IEnumerator<T> GetEnumerator() => _root.GetEnumerator();
+        public IEnumerator<T> GetEnumerator() => _root.AsEnumerable().Concat(_tail.AsEnumerable()).GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
