@@ -23,6 +23,8 @@ namespace PDS.Implementation.Collections
         private readonly PersistentVersionStorage _versionStorage;
         private readonly VersionNode<T> _root;
 
+        public static PersistentLinkedList<T> Empty { get; } = new();
+        
         public PersistentLinkedList()
         {
             _versionStorage = new PersistentVersionStorage();
@@ -332,7 +334,7 @@ namespace PDS.Implementation.Collections
 
         public bool Contains(T item)
         {
-            throw new NotImplementedException();
+            return Enumerable.Contains(this, item);
         }
 
         public T Get(int index)

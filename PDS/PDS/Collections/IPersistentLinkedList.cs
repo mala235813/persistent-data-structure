@@ -53,6 +53,8 @@ namespace PDS.Collections
         /// <param name="item"></param>
         /// <returns>True, if item was found, otherwise false</returns>
         bool Contains(T item);
+        
+        new bool IsEmpty { get; }
 
         /// <summary>
         /// Get item by index
@@ -154,5 +156,7 @@ namespace PDS.Collections
         /// <param name="value"></param>
         /// <returns>New instance of persistent linked list</returns>
         IPersistentLinkedList<T> SetItem(int index, T value);
+
+        new IPersistentLinkedList<T> Clear();
     }
 }

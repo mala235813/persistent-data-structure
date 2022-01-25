@@ -32,33 +32,21 @@ namespace PDS.Collections
         new IPersistentList<T> AddRange(IReadOnlyCollection<T> items);
 
         /// <summary>
-        /// Locate given item in the list
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="index"></param>
-        /// <param name="count"></param>
-        /// <param name="equalityComparer"></param>
-        /// <returns>Index of item, or -1 if item was not found</returns>
-        new int IndexOf(T item, int index, int count, IEqualityComparer<T>? equalityComparer);
-        
-        /// <summary>
         /// Insert item in given position
         /// </summary>
         /// <param name="index"></param>
         /// <param name="item"></param>
         /// <returns>New instance of persistent list</returns>
         new IPersistentList<T> Insert(int index, T item);
-
+        
         /// <summary>
-        /// Locate given item from the end of the list
+        /// Insert range of items in given position
         /// </summary>
-        /// <param name="item"></param>
         /// <param name="index"></param>
-        /// <param name="count"></param>
-        /// <param name="equalityComparer"></param>
-        /// <returns>Last index of item, or -1 if item was not found</returns>
-        new int LastIndexOf(T item, int index, int count, IEqualityComparer<T>? equalityComparer);
-
+        /// <param name="items"></param>
+        /// <returns>New instance of persistent list</returns>
+        new IPersistentList<T> InsertRange(int index, IEnumerable<T> items);
+        
         /// <summary>
         /// Remove first occurence of given item
         /// </summary>

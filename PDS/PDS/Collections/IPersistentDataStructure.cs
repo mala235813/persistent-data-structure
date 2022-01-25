@@ -8,6 +8,7 @@ namespace PDS.Collections
     /// <typeparam name="T">Item type</typeparam>
     /// <typeparam name="TSelf">Type of persistent collection implementation</typeparam>
     public interface IPersistentDataStructure<T, out TSelf> : IReadOnlyCollection<T>
+        where TSelf : IPersistentDataStructure<T, TSelf>
     {
         /// <summary>
         /// Add value to persistent collection
