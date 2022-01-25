@@ -334,7 +334,7 @@ namespace PDS.Implementation.Collections
 
         public bool Contains(T item)
         {
-            throw new NotImplementedException();
+            return Enumerable.Contains(this, item);
         }
 
         public T Get(int index)

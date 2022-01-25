@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
+using PDS.Collections;
 
 namespace PDS.Implementation.Collections
 {
-    public class PersistentList<T>
+    public class PersistentList<T> : IPersistentList<T>
     {
         private const int BranchingFactor = 32;
         private const int BitMask = BranchingFactor - 1;
@@ -15,7 +18,7 @@ namespace PDS.Implementation.Collections
         private readonly Node<T> _tail;
         private readonly int _tailOffset;
 
-        private PersistentList()
+        public PersistentList()
         {
             Count = 0;
             _shift = 5;
@@ -87,6 +90,63 @@ namespace PDS.Implementation.Collections
             return new PersistentList<T>(Count + 1, newShift, newRoot, newTail);
         }
 
+        public PersistentList<T> AddRange(IEnumerable<T> items)
+        {
+            if (items is not IReadOnlyCollection<T> collection)
+            {
+                collection = items.ToArray();
+            }
+
+            return AddRange(collection);
+        }
+
+        public PersistentList<T> AddRange(IReadOnlyCollection<T> items)
+        {
+            return items.Count == 0 ? this : new PersistentList<T>(this, items);
+        }
+
+        private PersistentList(PersistentList<T> oldVersion, IReadOnlyCollection<T> items)
+        {
+            using var enumerator = items.GetEnumerator();
+            enumerator.MoveNext();
+
+            var newList = oldVersion.Add(enumerator.Current);
+
+            Count = newList.Count;
+            _shift = newList._shift;
+            _root = newList._root;
+            _tail = newList._tail;
+            _tailOffset = newList._tailOffset;
+
+            var offset = 0;
+            var count = items.Count - 1;
+            while (offset < count)
+            {
+                var maxDelta = BranchingFactor - _tail.Count;
+                var delta = Math.Min(maxDelta, count - offset);
+                for (var i = 0; i < maxDelta; i++)
+                {
+                    if (!enumerator.MoveNext())
+                    {
+                        break;
+                    }
+
+                    _tail.Value.Add(enumerator.Current);
+                }
+
+                Count += delta;
+                offset += delta;
+
+                if (newList._tail.Count == BranchingFactor)
+                {
+                    (_root, _shift) = CreateNewRoot();
+                    _tail = new Node<T>();
+                }
+            }
+
+            _tailOffset = Count - _tail.Count;
+        }
+
         public PersistentList<T> Remove(int index)
         {
             if (index < 0 || index > Count)
@@ -106,61 +166,6 @@ namespace PDS.Implementation.Collections
             return new PersistentList<T>(Count, _shift, Remove(_shift, _root, index), _tail);
         }
 
-        public PersistentList<T> AddRange(IEnumerable<T> items)
-        {
-            if (items is not IReadOnlyCollection<T> collection)
-            {
-                collection = items.ToArray();
-            }
-
-            return AddRange(collection);
-        }
-
-        public PersistentList<T> AddRange(IReadOnlyCollection<T> items)
-        {
-            return items.Count == 0 ? this : new PersistentList<T>(this, items);
-        }
-        
-        private PersistentList(PersistentList<T> oldVersion, IReadOnlyCollection<T> items)
-        {
-            using var enumerator = items.GetEnumerator();
-            enumerator.MoveNext();
-
-            var newList = oldVersion.Add(enumerator.Current);
-
-            Count = newList.Count;
-            _shift = newList._shift;
-            _root = newList._root;
-            _tail = newList._tail;
-            _tailOffset = newList._tailOffset;
-            
-            var offset = 0;
-            var count = items.Count - 1;
-            while (offset < count)
-            {
-                var maxDelta = BranchingFactor - _tail.Count;
-                var delta = Math.Min(maxDelta, count - offset);
-                for (var i = 0; i < maxDelta; i++)
-                {
-                    if (!enumerator.MoveNext())
-                    {
-                        break;
-                    }
-                    _tail.Value.Add(enumerator.Current);
-                }
-
-                Count += delta;
-                offset += delta;
-                
-                if (newList._tail.Count == BranchingFactor)
-                {
-                    (_root, _shift) = CreateNewRoot();
-                    _tail = new Node<T>();
-                }
-            }
-
-            _tailOffset = Count - _tail.Count;
-        }
 
         private (Node<T> newRoot, int newShift) CreateNewRoot()
         {
@@ -244,7 +249,7 @@ namespace PDS.Implementation.Collections
 
             return newNode;
         }
-        
+
         private static Node<T> Remove(int level, Node<T> node, int index)
         {
             var newNode = node.Clone();
@@ -272,5 +277,108 @@ namespace PDS.Implementation.Collections
 
             return count;
         }
+
+        IPersistentList<T> IPersistentList<T>.AddRange(IEnumerable<T> items) => AddRange(items);
+
+        IPersistentList<T> IPersistentList<T>.Clear() => new PersistentList<T>();
+
+        IPersistentList<T> IPersistentList<T>.AddRange(IReadOnlyCollection<T> items) => AddRange(items);
+
+        public IPersistentList<T> Insert(int index, T item)
+        {
+            throw new NotImplementedException();
+        }
+        
+        public IPersistentList<T> InsertRange(int index, IEnumerable<T> items)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IPersistentList<T> Remove(T value, IEqualityComparer<T>? equalityComparer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IPersistentList<T> RemoveAll(Predicate<T> match)
+        {
+            throw new NotImplementedException();
+        }
+
+        IPersistentList<T> IPersistentList<T>.RemoveAt(int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IPersistentList<T> RemoveRange(IEnumerable<T> items, IEqualityComparer<T>? equalityComparer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IPersistentList<T> RemoveRange(int index, int count)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IPersistentList<T> Replace(T oldValue, T newValue, IEqualityComparer<T>? equalityComparer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IPersistentList<T> SetItem(int index, T value) => Set(index, value);
+
+        IPersistentList<T> IPersistentList<T>.Add(T item) => Add(item);
+
+        IImmutableList<T> IImmutableList<T>.AddRange(IEnumerable<T> items) => AddRange(items);
+
+        IImmutableList<T> IImmutableList<T>.Clear() => new PersistentList<T>();
+
+        public int IndexOf(T item, int index, int count, IEqualityComparer<T>? equalityComparer)
+        {
+            throw new NotImplementedException();
+        }
+
+        IImmutableList<T> IImmutableList<T>.Insert(int index, T element) => Insert(index, element);
+
+        IImmutableList<T> IImmutableList<T>.InsertRange(int index, IEnumerable<T> items) => InsertRange(index, items);
+
+        public int LastIndexOf(T item, int index, int count, IEqualityComparer<T>? equalityComparer)
+        {
+            throw new NotImplementedException();
+        }
+
+        IImmutableList<T> IImmutableList<T>.Remove(T value, IEqualityComparer<T>? equalityComparer) =>
+            Remove(value, equalityComparer);
+
+        IImmutableList<T> IImmutableList<T>.RemoveAll(Predicate<T> match) => RemoveAll(match);
+
+        IImmutableList<T> IImmutableList<T>.RemoveAt(int index) => Remove(index);
+
+        IImmutableList<T> IImmutableList<T>.RemoveRange(IEnumerable<T> items, IEqualityComparer<T>? equalityComparer) =>
+            RemoveRange(items, equalityComparer);
+
+        IImmutableList<T> IImmutableList<T>.RemoveRange(int index, int count) => RemoveRange(index, count);
+
+        IImmutableList<T> IImmutableList<T>.Replace(T oldValue, T newValue, IEqualityComparer<T>? equalityComparer) =>
+            Replace(oldValue, newValue, equalityComparer);
+
+        IImmutableList<T> IImmutableList<T>.SetItem(int index, T value) => Set(index, value);
+
+        IImmutableList<T> IImmutableList<T>.Add(T value) => Add(value);
+
+        IPersistentList<T> IPersistentDataStructure<T, IPersistentList<T>>.AddRange(IEnumerable<T> items) => AddRange(items);
+
+        IPersistentList<T> IPersistentDataStructure<T, IPersistentList<T>>.AddRange(IReadOnlyCollection<T> items) => AddRange(items);
+
+        IPersistentList<T> IPersistentDataStructure<T, IPersistentList<T>>.Clear() => new PersistentList<T>();
+
+        public bool IsEmpty => Count == 0;
+
+        IPersistentList<T> IPersistentDataStructure<T, IPersistentList<T>>.Add(T value) => Add(value);
+
+        public IEnumerator<T> GetEnumerator() => _root.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        public T this[int index] => Get(index);
     }
 }

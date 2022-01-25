@@ -9,6 +9,7 @@ namespace PDS.Implementation.Collections
 {
     public class PersistentSet<T> : IPersistentSet<T> where T : notnull
     {
+        private const int InitialSize = 32;
         private IPersistentList<List<T>> _buckets;
 
         public static PersistentSet<T> Empty { get; } = new();
@@ -22,8 +23,8 @@ namespace PDS.Implementation.Collections
         private PersistentSet()
         {
             Count = 0;
-            // TODO: persistent list
-            _buckets = null;
+            var array = Enumerable.Range(0, InitialSize).Select(i => new List<T>()).ToArray();
+            _buckets = new PersistentList<List<T>>().AddRange(array);
         }
 
         public int Count { get; }
@@ -34,20 +35,6 @@ namespace PDS.Implementation.Collections
             return (index, _buckets[index]);
         }
 
-        public T GetByKey(T key)
-        {
-            var (_, bucket) = GetBucket(key);
-            foreach (var k in bucket)
-            {
-                if (k.Equals(key))
-                {
-                    return k;
-                }
-            }
-
-            throw new KeyNotFoundException(key.ToString());
-        }
-        
         public PersistentSet<T> Remove(T value)
         {
             var (index, bucket) = GetBucket(value);
@@ -66,30 +53,30 @@ namespace PDS.Implementation.Collections
         }
 
 
-        IPersistentSet<T> IPersistentSet<T>.Add(T value) => Set(value);
+        public IPersistentSet<T> Add(T value) => Set(value);
 
         public IPersistentSet<T> Clear() => new PersistentSet<T>(0, _buckets.Clear());
 
-        IPersistentSet<T> IPersistentSet<T>.Except(IEnumerable<T> other)
+        public IPersistentSet<T> Except(IEnumerable<T> other)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        IPersistentSet<T> IPersistentSet<T>.Intersect(IEnumerable<T> other)
+        public IPersistentSet<T> Intersect(IEnumerable<T> other)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         IPersistentSet<T> IPersistentSet<T>.Remove(T value) => Remove(value);
 
-        IPersistentSet<T> IPersistentSet<T>.SymmetricExcept(IEnumerable<T> other)
+        public IPersistentSet<T> SymmetricExcept(IEnumerable<T> other)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        IPersistentSet<T> IPersistentSet<T>.Union(IEnumerable<T> other)
+        public IPersistentSet<T> Union(IEnumerable<T> other)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         IImmutableSet<T> IImmutableSet<T>.Clear() => Clear();
@@ -100,93 +87,74 @@ namespace PDS.Implementation.Collections
             return Enumerable.Contains(bucket, value);
         }
 
-        bool IReadOnlySet<T>.IsProperSubsetOf(IEnumerable<T> other)
+        public bool IsProperSubsetOf(IEnumerable<T> other)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        bool IReadOnlySet<T>.IsProperSupersetOf(IEnumerable<T> other)
+        public bool IsProperSupersetOf(IEnumerable<T> other)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        bool IReadOnlySet<T>.IsSubsetOf(IEnumerable<T> other)
+        public bool IsSubsetOf(IEnumerable<T> other)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        bool IReadOnlySet<T>.IsSupersetOf(IEnumerable<T> other)
+        public bool IsSupersetOf(IEnumerable<T> other)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        bool IReadOnlySet<T>.Overlaps(IEnumerable<T> other)
+        public bool Overlaps(IEnumerable<T> other)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        bool IReadOnlySet<T>.SetEquals(IEnumerable<T> other)
+        public bool SetEquals(IEnumerable<T> other)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        IImmutableSet<T> IImmutableSet<T>.Except(IEnumerable<T> other)
-        {
-            throw new System.NotImplementedException();
-        }
+        IImmutableSet<T> IImmutableSet<T>.Except(IEnumerable<T> other) => Except(other);
 
-        IImmutableSet<T> IImmutableSet<T>.Intersect(IEnumerable<T> other)
-        {
-            throw new System.NotImplementedException();
-        }
+        IImmutableSet<T> IImmutableSet<T>.Intersect(IEnumerable<T> other) => Intersect(other);
 
-        bool IImmutableSet<T>.IsProperSubsetOf(IEnumerable<T> other)
-        {
-            throw new System.NotImplementedException();
-        }
+        bool IImmutableSet<T>.IsProperSubsetOf(IEnumerable<T> other) => IsProperSubsetOf(other);
 
-        bool IImmutableSet<T>.IsProperSupersetOf(IEnumerable<T> other)
-        {
-            throw new System.NotImplementedException();
-        }
+        bool IImmutableSet<T>.IsProperSupersetOf(IEnumerable<T> other) => IsProperSupersetOf(other);
 
-        bool IImmutableSet<T>.IsSubsetOf(IEnumerable<T> other)
-        {
-            throw new System.NotImplementedException();
-        }
+        bool IImmutableSet<T>.IsSubsetOf(IEnumerable<T> other) => IsSubsetOf(other);
 
-        bool IImmutableSet<T>.IsSupersetOf(IEnumerable<T> other)
-        {
-            throw new System.NotImplementedException();
-        }
+        bool IImmutableSet<T>.IsSupersetOf(IEnumerable<T> other) => IsSupersetOf(other);
 
-        bool IImmutableSet<T>.Overlaps(IEnumerable<T> other)
-        {
-            throw new System.NotImplementedException();
-        }
+        bool IImmutableSet<T>.Overlaps(IEnumerable<T> other) => Overlaps(other);
 
         IImmutableSet<T> IImmutableSet<T>.Remove(T value) => Remove(value);
 
-        bool IImmutableSet<T>.SetEquals(IEnumerable<T> other)
-        {
-            throw new System.NotImplementedException();
-        }
+        bool IImmutableSet<T>.SetEquals(IEnumerable<T> other) => SetEquals(other);
 
-        IImmutableSet<T> IImmutableSet<T>.SymmetricExcept(IEnumerable<T> other)
-        {
-            throw new System.NotImplementedException();
-        }
+        IImmutableSet<T> IImmutableSet<T>.SymmetricExcept(IEnumerable<T> other) => SymmetricExcept(other);
 
+        IImmutableSet<T> IImmutableSet<T>.Union(IEnumerable<T> other) => Union(other);
+        
         public bool TryGetValue(T equalValue, out T actualValue)
         {
-            throw new System.NotImplementedException();
-        }
+            var (_, bucket) = GetBucket(equalValue);
+            foreach (var k in bucket)
+            {
+                if (k.Equals(equalValue))
+                {
+                    actualValue = k;
+                    return true;
+                }
+            }
 
-        IImmutableSet<T> IImmutableSet<T>.Union(IEnumerable<T> other)
-        {
-            throw new System.NotImplementedException();
+            actualValue = equalValue;
+            return false;
         }
-
+        
         public PersistentSet<T> Set(T value)
         {
             if (_buckets.Count < 0.67 * Count)
@@ -225,7 +193,7 @@ namespace PDS.Implementation.Collections
                 array[index].Add(item);
             }
 
-            //TODO: _buckets = new PersistentArray<List<T>>(array);
+            _buckets = new PersistentList<List<T>>().AddRange(array);
         }
 
         public IEnumerator<T> GetEnumerator()

@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PDS.Implementation.Collections
 {
-    public class Node<T>
+    public class Node<T> : IEnumerable<T>
     {
         public List<Node<T>> Child { get; } = new();
         public List<T> Value { get; } = new();
@@ -49,5 +51,10 @@ namespace PDS.Implementation.Collections
         {
             return new Node<T>(this);
         }
+
+        public IEnumerator<T> GetEnumerator() =>
+            Child.Count > 0 ? Child.SelectMany(c => c).GetEnumerator() : Value.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }
