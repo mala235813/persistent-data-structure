@@ -14,10 +14,11 @@ namespace PDS.Benchmark
         [JsonExporterAttribute.Full]
         [JsonExporterAttribute.BriefCompressed]
         [JsonExporterAttribute.FullCompressed]
+        [RPlotExporter]
         [JsonExporter("-custom", indentJson: true, excludeMeasurements: true)]
         public class RangeToList
         {
-            [Params(10, 1000, 100000, 10000000)]
+            [Params(10, 1000 )]
             public int Count { get; set; }
 
             [Benchmark(Baseline = true, Description = "ImmutableList<T>")]
