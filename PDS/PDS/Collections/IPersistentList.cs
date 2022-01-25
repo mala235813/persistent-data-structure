@@ -12,12 +12,10 @@ namespace PDS.Collections
         
         new IPersistentList<T> AddRange(IReadOnlyCollection<T> items);
         
-        new int IndexOf(T item, int index, int count, IEqualityComparer<T>? equalityComparer);
-        
         new IPersistentList<T> Insert(int index, T item);
 
-        new int LastIndexOf(T item, int index, int count, IEqualityComparer<T>? equalityComparer);
-
+        new IPersistentList<T> InsertRange(int index, IEnumerable<T> items);
+        
         new IPersistentList<T> Remove(T value, IEqualityComparer<T>? equalityComparer);
 
         new IPersistentList<T> RemoveAll(Predicate<T> match);

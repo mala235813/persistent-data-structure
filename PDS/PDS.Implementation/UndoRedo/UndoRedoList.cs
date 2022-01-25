@@ -16,8 +16,7 @@ namespace PDS.Implementation.UndoRedo
 
         public UndoRedoList()
         {
-            //TODO
-            _persistentList = null;
+            _persistentList = new PersistentList<T>();
             _undoStack = PersistentStack<IPersistentList<T>>.Empty;
             _redoStack = PersistentStack<IPersistentList<T>>.Empty;
         }
@@ -64,6 +63,13 @@ namespace PDS.Implementation.UndoRedo
         {
             var u = _undoStack.Push(_persistentList);
             return new UndoRedoList<T>(_persistentList.Insert(index, item), u,
+                PersistentStack<IPersistentList<T>>.Empty);
+        }
+
+        public IUndoRedoList<T> InsertRange(int index, IEnumerable<T> items)
+        {
+            var u = _undoStack.Push(_persistentList);
+            return new UndoRedoList<T>(_persistentList.InsertRange(index, items), u,
                 PersistentStack<IPersistentList<T>>.Empty);
         }
 
@@ -140,13 +146,9 @@ namespace PDS.Implementation.UndoRedo
 
         IPersistentList<T> IPersistentList<T>.AddRange(IReadOnlyCollection<T> items) => AddRange(items);
 
-        int IPersistentList<T>.IndexOf(T item, int index, int count, IEqualityComparer<T>? equalityComparer) =>
-            _persistentList.IndexOf(item, index, count, equalityComparer);
-
         IPersistentList<T> IPersistentList<T>.Insert(int index, T item) => Insert(index, item);
 
-        int IPersistentList<T>.LastIndexOf(T item, int index, int count, IEqualityComparer<T>? equalityComparer) =>
-            _persistentList.LastIndexOf(item, index, count, equalityComparer);
+        IPersistentList<T> IPersistentList<T>.InsertRange(int index, IEnumerable<T> items) => InsertRange(index, items);
 
         IPersistentList<T> IPersistentList<T>.Remove(T value, IEqualityComparer<T>? equalityComparer) =>
             Remove(value, equalityComparer);
@@ -172,21 +174,14 @@ namespace PDS.Implementation.UndoRedo
 
         IImmutableList<T> IImmutableList<T>.Clear() => Clear();
 
-        int IImmutableList<T>.IndexOf(T item, int index, int count, IEqualityComparer<T>? equalityComparer) =>
+        public int IndexOf(T item, int index, int count, IEqualityComparer<T>? equalityComparer) =>
             _persistentList.IndexOf(item, index, count, equalityComparer);
 
         IImmutableList<T> IImmutableList<T>.Insert(int index, T element) => Insert(index, element);
 
-        public IImmutableList<T> InsertRange(int index, IEnumerable<T> items)
-        {
-            // TODO: add method to interface
-            // var u = _undoStack.Push(_persistentList);
-            // return new UndoRedoList<T>(_persistentList.InsertRange(index, items), u,
-            //     PersistentStack<IPersistentList<T>>.Empty);
-            return _persistentList.InsertRange(index, items);
-        }
+        IImmutableList<T> IImmutableList<T>.InsertRange(int index, IEnumerable<T> items) => InsertRange(index, items);
 
-        int IImmutableList<T>.LastIndexOf(T item, int index, int count, IEqualityComparer<T>? equalityComparer) =>
+        public int LastIndexOf(T item, int index, int count, IEqualityComparer<T>? equalityComparer) =>
             _persistentList.LastIndexOf(item, index, count, equalityComparer);
 
         IImmutableList<T> IImmutableList<T>.Remove(T value, IEqualityComparer<T>? equalityComparer) =>

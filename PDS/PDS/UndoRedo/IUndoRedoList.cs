@@ -14,7 +14,9 @@ namespace PDS.UndoRedo
         new IUndoRedoList<T> AddRange(IReadOnlyCollection<T> items);
         
         new IUndoRedoList<T> Insert(int index, T item);
-        
+
+        new IUndoRedoList<T> InsertRange(int index, IEnumerable<T> items);
+
         new IUndoRedoList<T> Remove(T value, IEqualityComparer<T>? equalityComparer);
 
         new IUndoRedoList<T> RemoveAll(Predicate<T> match);
