@@ -157,12 +157,32 @@ namespace PDS.Implementation.Collections
 
         public IPersistentDictionary<TKey, TValue> Update(TKey key, Func<TKey, TValue, TValue> valueFactory)
         {
-            throw new NotImplementedException();
+            var (_, bucket) = GetBucket(key);
+            foreach (var (k, v) in bucket)
+            {
+                if (k.Equals(key))
+                {
+                    return Set(k, valueFactory(k, v));
+                }
+            }
+
+            throw new KeyNotFoundException(key.ToString());
         }
 
         public bool TryAdd(TKey key, TValue value, out IPersistentDictionary<TKey, TValue> newVersion)
         {
-            throw new NotImplementedException();
+            var (_, bucket) = GetBucket(key);
+            foreach (var (k, v) in bucket)
+            {
+                if (k.Equals(key))
+                {
+                    newVersion = this;
+                    return false;
+                }
+            }
+
+            newVersion = Set(key, value);
+            return true;
         }
 
         public bool Contains(KeyValuePair<TKey, TValue> pair)

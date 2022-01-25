@@ -43,6 +43,16 @@ namespace PDS.Tests
             a.Contains(new KeyValuePair<int, int> (0, 50) ).Should().BeTrue();
             a.Contains(new KeyValuePair<int, int> (2, 50) ).Should().BeFalse();
 
+            var ca = a as IUndoRedoDictionary<int, int>;
+            ca.TryAdd(0, 1, out var na).Should().BeFalse();
+            ca.Should().BeSameAs(na);
+            ca.TryAdd(1, 3, out var ba).Should().BeTrue();
+            ba.Count.Should().Be(a.Count + 1);
+
+            var ub = ba.Update(1, ((k, v) => k + v + 10));
+            ub.Count.Should().Be(ba.Count);
+            ub[1].Should().Be(14);
+            
             var d2 = a;
             for (int i = 0; i < 100; ++i)
             {
