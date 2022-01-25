@@ -3,6 +3,10 @@ using System.Collections.Immutable;
 
 namespace PDS.Collections
 {
+    /// <summary>
+    /// Persistent set
+    /// </summary>
+    /// <typeparam name="T">Item type</typeparam>
     public interface IPersistentSet<T> : IPersistentDataStructure<T, IPersistentSet<T>>, IImmutableSet<T>, IReadOnlySet<T>
     {
         /// <summary>Adds the specified element to this persistent set.</summary>

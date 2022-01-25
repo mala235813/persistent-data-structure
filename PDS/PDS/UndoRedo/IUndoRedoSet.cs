@@ -3,6 +3,10 @@ using PDS.Collections;
 
 namespace PDS.UndoRedo
 {
+    /// <summary>
+    /// Persistent set with undo-redo mechanic
+    /// </summary>
+    /// <typeparam name="T">Item type</typeparam>
     public interface IUndoRedoSet<T> : IPersistentSet<T>,
         IUndoRedoDataStructure<T, IUndoRedoSet<T>>
     {
