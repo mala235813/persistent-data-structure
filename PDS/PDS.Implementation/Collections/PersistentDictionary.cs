@@ -18,7 +18,7 @@ namespace PDS.Implementation.Collections
             _buckets = buckets;
         }
 
-        private PersistentDictionary()
+        public PersistentDictionary()
         {
             Count = 0;
             var array = Enumerable.Range(0, InitialSize).Select(i => new List<KeyValuePair<TKey, TValue>>()).ToArray();

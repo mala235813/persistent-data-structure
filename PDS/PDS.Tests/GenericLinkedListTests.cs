@@ -40,10 +40,10 @@ namespace PDS.Tests
             a.IsEmpty.Should().BeTrue();
 
             Action removeAt0 = () => a.RemoveAt(0);
-            removeAt0.Should().Throw<IndexOutOfRangeException>();
+            removeAt0.Should().Throw<ArgumentOutOfRangeException>();
 
             Action removeAtNegativePos = () => a.RemoveAt(-1);
-            removeAtNegativePos.Should().Throw<IndexOutOfRangeException>();
+            removeAtNegativePos.Should().Throw<ArgumentOutOfRangeException>();
 
             Func<int> first = () => a.First;
             first.Should().Throw<InvalidOperationException>().WithMessage("Unreachable version");
@@ -55,10 +55,10 @@ namespace PDS.Tests
         private void UndoRedoLinkedListTest(IUndoRedoLinkedList<int> a)
         {
             Action removeAt0 = () => a.RemoveAt(0);
-            removeAt0.Should().Throw<IndexOutOfRangeException>();
+            removeAt0.Should().Throw<ArgumentOutOfRangeException>();
 
             Action removeAtNegativePos = () => a.RemoveAt(-1);
-            removeAtNegativePos.Should().Throw<IndexOutOfRangeException>();
+            removeAtNegativePos.Should().Throw<ArgumentOutOfRangeException>();
 
             Func<int> first = () => a.First;
             first.Should().Throw<InvalidOperationException>().WithMessage("Unreachable version");
@@ -82,25 +82,35 @@ namespace PDS.Tests
 
             var f = a.AddRange(Enumerable.Range(0, 1));
             f.Count.Should().Be(1);
+            
+            var f2 = a.AddRange(Enumerable.Range(0, 1).ToArray());
+            f2.Count.Should().Be(1);
 
             f.Get(0).Should().Be(0);
 
             var g = a.AddFirst(0);
             g.Count.Should().Be(1);
+
+            var g2 = g.AddFirst(1);
+            g2.Count.Should().Be(2);
             
             var h = a.AddLast(0);
             h.Count.Should().Be(1);
-
-            // h.Contains(0).Should().BeTrue();
 
             var j = h.SetItem(0, 5);
             j.First.Should().Be(5);
 
             Action setItemNegative = () => h.SetItem(-1, 2);
-            setItemNegative.Should().Throw<IndexOutOfRangeException>();
+            setItemNegative.Should().Throw<ArgumentOutOfRangeException>();
             
             Action setItemOutOfRange = () => h.SetItem(2, 2);
-            setItemOutOfRange.Should().Throw<IndexOutOfRangeException>();
+            setItemOutOfRange.Should().Throw<ArgumentOutOfRangeException>();
+
+            var ala = a.AddRange(Enumerable.Range(0, 100));
+            var ala1 = ala.SetItem(0, 5);
+            ala1.First.Should().Be(5);
+            var ala2 = ala.RemoveAt(0);
+            ala2.Count.Should().Be(99);
         }
     }
 }
