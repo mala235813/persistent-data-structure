@@ -12,11 +12,11 @@ namespace PDS.Tests
     [TestFixture]
     public class GenericLinkedListTests
     {
-        public static Type[] GenericLinkedListTypes = { typeof(PersistentLinkedList<>), typeof(UndoRedoLinkedList<>) };
-        public static Type[] GenericUndoRedoLinkedListTestTypes = { typeof(UndoRedoLinkedList<>) };
+        private static Type[] _genericLinkedListTypes = { typeof(PersistentLinkedList<>), typeof(UndoRedoLinkedList<>) };
+        private static Type[] _genericUndoRedoLinkedListTestTypes = { typeof(UndoRedoLinkedList<>) };
 
         [Test(Description = "Test IPersistentLinkedList implementation")]
-        [TestCaseSource(nameof(GenericLinkedListTypes))]
+        [TestCaseSource(nameof(_genericLinkedListTypes))]
         public void ImplementationIImmutableStackTest(Type stackType)
         {
             var classType = stackType.MakeGenericType(typeof(int));
@@ -26,7 +26,7 @@ namespace PDS.Tests
         }
         
         [Test(Description = "Test IUndoRedoLinkedList implementation")]
-        [TestCaseSource(nameof(GenericUndoRedoLinkedListTestTypes))]
+        [TestCaseSource(nameof(_genericUndoRedoLinkedListTestTypes))]
         public void ImplementationIPersistentStackTest(Type stackType)
         {
             var classType = stackType.MakeGenericType(typeof(int));
@@ -35,7 +35,7 @@ namespace PDS.Tests
             UndoRedoLinkedListTest(stack);
         }
 
-        private void PersistentLinkedListTest(IPersistentLinkedList<int> a)
+        private static void PersistentLinkedListTest(IPersistentLinkedList<int> a)
         {
             a.IsEmpty.Should().BeTrue();
 
@@ -52,7 +52,7 @@ namespace PDS.Tests
             last.Should().Throw<InvalidOperationException>().WithMessage("Unreachable version");
         }
         
-        private void UndoRedoLinkedListTest(IUndoRedoLinkedList<int> a)
+        private static void UndoRedoLinkedListTest(IUndoRedoLinkedList<int> a)
         {
             Action removeAt0 = () => a.RemoveAt(0);
             removeAt0.Should().Throw<ArgumentOutOfRangeException>();

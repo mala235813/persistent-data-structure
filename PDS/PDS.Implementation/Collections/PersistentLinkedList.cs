@@ -50,6 +50,7 @@ namespace PDS.Implementation.Collections
                 it = it.FindNode(_root).RightNode;
             }
 
+            Debug.Assert(it != null, "Inner node is null");
             return it;
         }
 
@@ -100,9 +101,8 @@ namespace PDS.Implementation.Collections
 
             if (!delNode.RightNode.IsFull)
             {
-                var newLeft = delNode.LeftNode.UpdateRight(delNode.RightNode, newVersion);
-                var newRight = delNode.RightNode.UpdateLeft(delNode.LeftNode, newVersion);
-                //Debug.Assert(newLeft == newRight, "newLeft == newRight");
+                delNode.LeftNode.UpdateRight(delNode.RightNode, newVersion);
+                delNode.RightNode.UpdateLeft(delNode.LeftNode, newVersion);
                 return new PersistentLinkedList<T>(_versionStorage, newVersion, Count - 1);
             }
 

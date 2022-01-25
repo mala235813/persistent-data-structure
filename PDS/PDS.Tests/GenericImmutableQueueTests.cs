@@ -10,10 +10,10 @@ namespace PDS.Tests
     [TestFixture]
     public class GenericImmutableQueueTests
     {
-        public static Type[] GenericImmutableQueueTypes = { typeof(PersistentLinkedList<>), typeof(UndoRedoLinkedList<>) };
+        private static Type[] _genericImmutableQueueTypes = { typeof(PersistentLinkedList<>), typeof(UndoRedoLinkedList<>) };
 
         [Test(Description = "Test IImmutableQueue implementation")]
-        [TestCaseSource(nameof(GenericImmutableQueueTypes))]
+        [TestCaseSource(nameof(_genericImmutableQueueTypes))]
         public void ImplementationIImmutableQueueTest(Type stackType)
         {
             var classType = stackType.MakeGenericType(typeof(int));

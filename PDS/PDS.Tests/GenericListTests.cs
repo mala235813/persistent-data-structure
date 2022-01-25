@@ -13,11 +13,11 @@ namespace PDS.Tests
     [TestFixture]
     public class GenericListTests
     {
-        public static Type[] GenericListTypes = {typeof(PersistentList<>), typeof(UndoRedoList<>)};
-        public static Type[] GenericUndoRedoListTestTypes = {typeof(UndoRedoList<>)};
+        private static Type[] _genericListTypes = {typeof(PersistentList<>), typeof(UndoRedoList<>)};
+        private static Type[] _genericUndoRedoListTestTypes = {typeof(UndoRedoList<>)};
 
         [Test(Description = "Test IPersistentLinkedList implementation")]
-        [TestCaseSource(nameof(GenericListTypes))]
+        [TestCaseSource(nameof(_genericListTypes))]
         public void PersistentListImplementationTest(Type stackType)
         {
             var classType = stackType.MakeGenericType(typeof(int));
@@ -27,7 +27,7 @@ namespace PDS.Tests
         }
 
         [Test(Description = "Test IImmutableList implementation")]
-        [TestCaseSource(nameof(GenericListTypes))]
+        [TestCaseSource(nameof(_genericListTypes))]
         public void ImmutableListImplementationTest(Type stackType)
         {
             var classType = stackType.MakeGenericType(typeof(int));
@@ -37,7 +37,7 @@ namespace PDS.Tests
         }
         
         [Test(Description = "Test IUndoRedoLinkedList implementation")]
-        [TestCaseSource(nameof(GenericUndoRedoListTestTypes))]
+        [TestCaseSource(nameof(_genericUndoRedoListTestTypes))]
         public void ImplementationUndoRedoListTest(Type stackType)
         {
             var classType = stackType.MakeGenericType(typeof(int));
@@ -46,7 +46,7 @@ namespace PDS.Tests
             UndoRedoListTest(list);
         }
 
-        private void PersistentListTest(IPersistentList<int> a)
+        private static void PersistentListTest(IPersistentList<int> a)
         {
             a.IsEmpty.Should().BeTrue();
 
@@ -78,6 +78,7 @@ namespace PDS.Tests
             f.Should().BeEquivalentTo(Enumerable.Range(0, 2048), opt => opt.WithStrictOrdering());
             f[1].Should().Be(1);
 
+            // ReSharper disable once NotAccessedVariable
             int aa;
             Action getAtNegativePos = () => aa = a[-1];
             getAtNegativePos.Should().Throw<ArgumentOutOfRangeException>();
@@ -95,7 +96,7 @@ namespace PDS.Tests
             o[f.Count].Should().Be(111);
         }
 
-        private void ImmutableListTest(IImmutableList<int> a)
+        private static void ImmutableListTest(IImmutableList<int> a)
         {
             a.Count.Should().Be(0);
 
@@ -112,9 +113,11 @@ namespace PDS.Tests
 
             c.Should().BeEquivalentTo(d, opt => opt.WithStrictOrdering());
 
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             Action removeAt0 = () => a.RemoveAt(0);
             removeAt0.Should().Throw<ArgumentOutOfRangeException>();
             
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             Action removeAtNegativePos = () => a.RemoveAt(-1);
             removeAtNegativePos.Should().Throw<ArgumentOutOfRangeException>();
 
@@ -127,10 +130,12 @@ namespace PDS.Tests
             f.Should().BeEquivalentTo(Enumerable.Range(0, 2048), opt => opt.WithStrictOrdering());
             f[1].Should().Be(1);
 
+            // ReSharper disable once NotAccessedVariable
             int aa;
             Action getAtNegativePos = () => aa = a[-1];
             getAtNegativePos.Should().Throw<ArgumentOutOfRangeException>();
-            
+
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             Action setAtNegativePos = () => a.SetItem(-1, 0);
             setAtNegativePos.Should().Throw<ArgumentOutOfRangeException>();
 
@@ -207,6 +212,7 @@ namespace PDS.Tests
             f.Should().BeEquivalentTo(Enumerable.Range(0, 2048), opt => opt.WithStrictOrdering());
             f[1].Should().Be(1);
 
+            // ReSharper disable once NotAccessedVariable
             int aa;
             Action getAtNegativePos = () => aa = a[-1];
             getAtNegativePos.Should().Throw<ArgumentOutOfRangeException>();

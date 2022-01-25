@@ -42,7 +42,7 @@ namespace PDS.Tests
             UndoRedoTest(undoRedoStructure);
         }
 
-        private void UndoRedoTest<T>(IUndoRedoDataStructure<int, T> structure) where T : IUndoRedoDataStructure<int, T>
+        private static void UndoRedoTest<T>(IUndoRedoDataStructure<int, T> structure) where T : IUndoRedoDataStructure<int, T>
         {
             structure.CanRedo.Should().BeFalse();
             structure.CanUndo.Should().BeFalse();
@@ -50,9 +50,11 @@ namespace PDS.Tests
             structure.TryRedo(out _).Should().BeFalse();
             structure.TryUndo(out _).Should().BeFalse();
 
+            // ReSharper disable once AccessToModifiedClosure
             Action redo = () => structure.Redo();
             redo.Should().Throw<InvalidOperationException>().WithMessage("Redo stack is empty");
 
+            // ReSharper disable once AccessToModifiedClosure
             Action undo = () => structure.Undo();
             undo.Should().Throw<InvalidOperationException>().WithMessage("Undo stack is empty");
 

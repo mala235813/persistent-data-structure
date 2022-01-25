@@ -12,68 +12,73 @@ namespace PDS.Tests
     [TestFixture]
     public class GenericImmutableStackTests
     {
-        public static Type[] GenericTestTypes = { typeof(PersistentStack<>), typeof(PersistentLinkedList<>), typeof(UndoRedoStack<>), typeof(UndoRedoLinkedList<>) };
-        public static Type[] GenericStackTestTypes = { typeof(PersistentStack<>), typeof(UndoRedoStack<>) };
-        public static Type[] UndoRedoTestTypes = { typeof(UndoRedoStack<>), typeof(UndoRedoLinkedList<>) };
-        
+        private static Type[] _genericTestTypes =
+        {
+            typeof(PersistentStack<>), typeof(PersistentLinkedList<>), typeof(UndoRedoStack<>),
+            typeof(UndoRedoLinkedList<>)
+        };
+
+        private static Type[] _genericStackTestTypes = {typeof(PersistentStack<>), typeof(UndoRedoStack<>)};
+        private static Type[] _undoRedoTestTypes = {typeof(UndoRedoStack<>), typeof(UndoRedoLinkedList<>)};
+
         [Test(Description = "Test IImmutableStack implementation")]
-        [TestCaseSource(nameof(GenericTestTypes))]
+        [TestCaseSource(nameof(_genericTestTypes))]
         public void ImplementationIImmutableStackTest(Type stackType)
         {
             var classType = stackType.MakeGenericType(typeof(int));
-            var stack = (IImmutableStack<int>)Activator.CreateInstance(classType)!;
+            var stack = (IImmutableStack<int>) Activator.CreateInstance(classType)!;
 
             ImmutableStackTest(stack);
         }
-        
+
         [Test(Description = "Test IPersistentStack implementation")]
-        [TestCaseSource(nameof(GenericTestTypes))]
+        [TestCaseSource(nameof(_genericTestTypes))]
         public void ImplementationIPersistentStackTest(Type stackType)
         {
             var classType = stackType.MakeGenericType(typeof(int));
-            var stack = (IPersistentStack<int>)Activator.CreateInstance(classType)!;
+            var stack = (IPersistentStack<int>) Activator.CreateInstance(classType)!;
 
-            IPersistentStackTests(stack);
+            PersistentStackTests(stack);
         }
-        
+
         [Test(Description = "Test IUndoRedoStack implementation")]
-        [TestCaseSource(nameof(UndoRedoTestTypes))]
+        [TestCaseSource(nameof(_undoRedoTestTypes))]
         public void ImplementationIUndoRedoStackTest(Type stackType)
         {
             var classType = stackType.MakeGenericType(typeof(int));
-            var stack = (IUndoRedoStack<int>)Activator.CreateInstance(classType)!;
+            var stack = (IUndoRedoStack<int>) Activator.CreateInstance(classType)!;
 
-            IUndoRedoStackTest(stack);
+            UndoRedoStackTest(stack);
         }
-        
+
         [Test(Description = "Test IUndoRedoStack implementation")]
-        [TestCaseSource(nameof(GenericStackTestTypes))]
+        [TestCaseSource(nameof(_genericStackTestTypes))]
         public void ImplementationIStackTest(Type stackType)
         {
             var classType = stackType.MakeGenericType(typeof(int));
-            var stack = (IPersistentStack<int>)Activator.CreateInstance(classType)!;
+            var stack = (IPersistentStack<int>) Activator.CreateInstance(classType)!;
 
-            IPeekPopStackTest(stack);
+            PeekPopStackTest(stack);
         }
 
-        private void ImmutableStackTest(IImmutableStack<int> a)
+        private static void ImmutableStackTest(IImmutableStack<int> a)
         {
             a.IsEmpty.Should().BeTrue();
-            
+
             var b = a.Push(0);
-            
+
             a.IsEmpty.Should().BeTrue();
             b.IsEmpty.Should().BeFalse();
             b.Peek().Should().Be(0);
 
             var c = b.Pop();
-        
+
             b.IsEmpty.Should().BeFalse();
             b.Peek().Should().Be(0);
             c.IsEmpty.Should().BeTrue();
-            
+
             var d = b.Push(1);
-        
+
             b.IsEmpty.Should().BeFalse();
             b.Peek().Should().Be(0);
 
@@ -82,8 +87,8 @@ namespace PDS.Tests
 
             d.Clear().IsEmpty.Should().BeTrue();
         }
-        
-        private void IPersistentStackTests(IPersistentStack<int> a)
+
+        private static void PersistentStackTests(IPersistentStack<int> a)
         {
             a.IsEmpty.Should().BeTrue();
             a.Count.Should().Be(0);
@@ -91,19 +96,19 @@ namespace PDS.Tests
             var b = a.Push(0);
 
             b.Count.Should().Be(1);
- 
+
             a.IsEmpty.Should().BeTrue();
             b.IsEmpty.Should().BeFalse();
             b.Peek().Should().Be(0);
 
             var c = b.Pop();
-        
+
             b.IsEmpty.Should().BeFalse();
             b.Peek().Should().Be(0);
             c.IsEmpty.Should().BeTrue();
-            
+
             var d = b.Push(1);
-        
+
             b.IsEmpty.Should().BeFalse();
             b.Peek().Should().Be(0);
 
@@ -112,8 +117,8 @@ namespace PDS.Tests
 
             d.Clear().IsEmpty.Should().BeTrue();
         }
-        
-        private void IUndoRedoStackTest(IUndoRedoStack<int> a)
+
+        private void UndoRedoStackTest(IUndoRedoStack<int> a)
         {
             a.IsEmpty.Should().Be(true);
             a.Count.Should().Be(0);
@@ -138,19 +143,19 @@ namespace PDS.Tests
             redoUndoB.CanRedo.Should().BeFalse();
 
             b.Count.Should().Be(1);
- 
+
             a.IsEmpty.Should().Be(true);
             b.IsEmpty.Should().Be(false);
             b.Peek().Should().Be(0);
 
             var c = b.Pop();
-        
+
             b.IsEmpty.Should().Be(false);
             b.Peek().Should().Be(0);
             c.IsEmpty.Should().Be(true);
-            
+
             var d = b.Push(1);
-        
+
             b.IsEmpty.Should().Be(false);
             b.Peek().Should().Be(0);
 
@@ -160,7 +165,7 @@ namespace PDS.Tests
             d.Clear().IsEmpty.Should().Be(true);
         }
 
-        private void IPeekPopStackTest(IPersistentStack<int> a)
+        private static void PeekPopStackTest(IPersistentStack<int> a)
         {
             a.IsEmpty.Should().Be(true);
             a.Count.Should().Be(0);

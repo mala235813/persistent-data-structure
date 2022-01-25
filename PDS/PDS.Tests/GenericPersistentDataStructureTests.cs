@@ -80,7 +80,7 @@ namespace PDS.Tests
             PersistentDataStructureWithStackTest(structure);
         }
 
-        private void PersistentDataStructureTest<T>(IPersistentDataStructure<int, T> a) where T: IPersistentDataStructure<int, T>
+        private static void PersistentDataStructureTest<T>(IPersistentDataStructure<int, T> a) where T: IPersistentDataStructure<int, T>
         {
             a.IsEmpty.Should().BeTrue();
 
@@ -95,7 +95,7 @@ namespace PDS.Tests
             d.Count.Should().Be(5);
         }
         
-        private void PersistentDataStructureWithSetTest(IPersistentDataStructure<int, IPersistentSet<int>> a)
+        private static void PersistentDataStructureWithSetTest(IPersistentDataStructure<int, IPersistentSet<int>> a)
         {
             a.IsEmpty.Should().BeTrue();
 
@@ -110,7 +110,7 @@ namespace PDS.Tests
             d.Count.Should().Be(5);
         }
         
-        private void PersistentDataStructureWithStackTest(IPersistentDataStructure<int, IPersistentStack<int>> a)
+        private static void PersistentDataStructureWithStackTest(IPersistentDataStructure<int, IPersistentStack<int>> a)
         {
             a.IsEmpty.Should().BeTrue();
 
