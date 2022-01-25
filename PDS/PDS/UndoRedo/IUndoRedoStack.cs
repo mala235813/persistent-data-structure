@@ -1,31 +1,32 @@
-﻿using System.Collections.Immutable;
+﻿using PDS.Collections;
 
-namespace PDS.Collections
+namespace PDS.UndoRedo
 {
     /// <summary>
-    /// Persistent stack
+    /// Persistent stack with undo-redo mechanic
     /// </summary>
     /// <typeparam name="T">Item type</typeparam>
-    public interface IPersistentStack<T> : IPersistentDataStructure<T, IPersistentStack<T>>, IImmutableStack<T>
+    public interface IUndoRedoStack<T> : IPersistentStack<T>,
+        IUndoRedoDataStructure<T, IUndoRedoStack<T>>
     {
         /// <summary>
         /// Remove item from the top of the stack
         /// </summary>
         /// <returns>New instance of persistent stack</returns>
-        new IPersistentStack<T> Pop();
-
+        new IUndoRedoStack<T> Pop();
+        
         /// <summary>
         /// Add item to the top of the stack
         /// </summary>
         /// <param name="value"></param>
         /// <returns>New instance of persistent stack</returns>
-        new IPersistentStack<T> Push(T value);
+        new IUndoRedoStack<T> Push(T value);
         
         /// <summary>
         /// Clear persistent stack
         /// </summary>
         /// <returns>Empty stack</returns>
-        new IPersistentStack<T> Clear();
+        new IUndoRedoStack<T> Clear();
         
         /// <summary>
         /// Check if stack is empty

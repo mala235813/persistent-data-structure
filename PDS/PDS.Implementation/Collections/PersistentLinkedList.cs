@@ -23,6 +23,8 @@ namespace PDS.Implementation.Collections
         private readonly PersistentVersionStorage _versionStorage;
         private readonly VersionNode<T> _root;
 
+        public static PersistentLinkedList<T> Empty { get; } = new();
+
         public PersistentLinkedList()
         {
             _versionStorage = new PersistentVersionStorage();
@@ -44,10 +46,11 @@ namespace PDS.Implementation.Collections
             var it = _root.Front;
             for (var i = 0; i < index; i++)
             {
-                it = it.FindNode(_root).RightNode;
                 Debug.Assert(it != null, "Inner node is null");
+                it = it.FindNode(_root).RightNode;
             }
 
+            Debug.Assert(it != null, "Inner node is null");
             return it;
         }
 
@@ -55,7 +58,8 @@ namespace PDS.Implementation.Collections
         {
             if (index < 0 || index >= Count)
             {
-                throw new IndexOutOfRangeException();
+                throw new ArgumentOutOfRangeException(
+                    $"{nameof(index)} is out of range: {index}, expected to be > 0 and < {Count}");
             }
 
             var indFatNode = TraverseRight(index);
@@ -97,9 +101,8 @@ namespace PDS.Implementation.Collections
 
             if (!delNode.RightNode.IsFull)
             {
-                var newLeft = delNode.LeftNode.UpdateRight(delNode.RightNode, newVersion);
-                var newRight = delNode.RightNode.UpdateLeft(delNode.LeftNode, newVersion);
-                Debug.Assert(newLeft == newRight, "newLeft == newRight");
+                delNode.LeftNode.UpdateRight(delNode.RightNode, newVersion);
+                delNode.RightNode.UpdateLeft(delNode.LeftNode, newVersion);
                 return new PersistentLinkedList<T>(_versionStorage, newVersion, Count - 1);
             }
 
@@ -115,7 +118,8 @@ namespace PDS.Implementation.Collections
         {
             if (index < 0 || index > Count)
             {
-                throw new IndexOutOfRangeException();
+                throw new ArgumentOutOfRangeException(
+                    $"{nameof(index)} is out of range: {index}, expected to be > 0 and < {Count}");
             }
 
             if (index == Count)
@@ -161,7 +165,8 @@ namespace PDS.Implementation.Collections
         {
             if (index < 0 || index > Count)
             {
-                throw new IndexOutOfRangeException();
+                throw new ArgumentOutOfRangeException(
+                    $"{nameof(index)} is out of range: {index}, expected to be > 0 and < {Count}");
             }
 
             var setFatNode = TraverseRight(index);
@@ -251,13 +256,13 @@ namespace PDS.Implementation.Collections
         {
             if (index < 0 || index >= Count)
             {
-                throw new ArgumentOutOfRangeException(nameof(index));
-            }
+                throw new ArgumentOutOfRangeException(
+                    $"{nameof(index)} is out of range: {index}, expected to be > 0 and < {Count}");            }
 
             if (count < 0 || index + count > Count)
             {
-                throw new ArgumentOutOfRangeException(nameof(count));
-            }
+                throw new ArgumentOutOfRangeException(
+                    $"{nameof(count)} is out of range: {count}, should be > 0 and {index} + {count}, expected to be > 0 and < {Count}");            }
 
             var i = index;
             foreach (var it in this.Skip(index).Take(count))
@@ -332,7 +337,7 @@ namespace PDS.Implementation.Collections
 
         public bool Contains(T item)
         {
-            throw new NotImplementedException();
+            return Enumerable.Contains(this, item);
         }
 
         public T Get(int index)
@@ -380,14 +385,8 @@ namespace PDS.Implementation.Collections
             // }
             //
             // return new PersistentLinkedList<T>(_versionStorage, newVersion, count);
-            var list = this;
-            
-            foreach (var item in items)
-            {
-                list = list.PushBack(item);
-            }
 
-            return list;
+            return items.Aggregate(this, (current, item) => current.PushBack(item));
         }
 
         public IPersistentLinkedList<T> AddRange(IReadOnlyCollection<T> items)
@@ -406,10 +405,11 @@ namespace PDS.Implementation.Collections
             var it = _root.Front;
             for (var i = 0; i < Count; i++)
             {
+                Debug.Assert(it != null, "Inner node is null");
                 var listNode = it.FindNode(_root);
                 yield return listNode.Value;
                 it = listNode.RightNode;
-                Debug.Assert(it != null, "Inner node is null");
+                
             }
         }
 
