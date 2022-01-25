@@ -22,6 +22,8 @@ jobs:
         run: |
           cd ./BenchmarkDotNet.Artifacts/results/
           Rscript BuildPlots.R *-measurements.csv
+          ls
+          pwd
       - uses: actions/upload-artifact@v2
         with:
           name: plots
