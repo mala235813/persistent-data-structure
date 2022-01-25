@@ -1,7 +1,7 @@
 name: Render plots
 
-# on:
-  # push:
+on:
+  push:
     # branches: [ main ]
 
 jobs:
@@ -25,4 +25,4 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: plots
-          path: path/to/artifact
+          path: ./*.png
