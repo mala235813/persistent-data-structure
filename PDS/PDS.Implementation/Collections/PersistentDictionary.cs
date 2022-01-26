@@ -32,6 +32,10 @@ namespace PDS.Implementation.Collections
         private (int index, List<KeyValuePair<TKey, TValue>> bucket) GetBucket(TKey key)
         {
             var index = key.GetHashCode() % _buckets.Count;
+            if (index < 0)
+            {
+                index += _buckets.Count;
+            }
             return (index, _buckets[index]);
         }
 

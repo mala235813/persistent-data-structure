@@ -32,6 +32,10 @@ namespace PDS.Implementation.Collections
         private (int index, List<T> bucket) GetBucket(T value)
         {
             var index = value.GetHashCode() % _buckets.Count;
+            if (index < 0)
+            {
+                index += _buckets.Count;
+            }
             return (index, _buckets[index]);
         }
 
