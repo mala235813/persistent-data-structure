@@ -16,8 +16,7 @@ namespace PDS.Playground
             var listC = listB.Set(0, 33);
             Debug.Assert(listB[0] == 15);
             Debug.Assert(listC[0] == 33);
-
-
+            
             var dictA = new PersistentDictionary<int, string>();
             var dictB = dictA.Set(15, "B");
             var dictC = dictA.Set(15, "C");
