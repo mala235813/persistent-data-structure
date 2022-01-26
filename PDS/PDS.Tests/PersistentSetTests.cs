@@ -25,6 +25,9 @@ namespace PDS.Tests
             
             s2.TryGetValue(52, out var act2).Should().BeFalse();
             act2.Should().Be(52);
+            
+            var negS = s2.Add(-1);
+            negS.TryGetValue(-1, out _).Should().BeTrue();
 
             var s3 = s2.Remove(0);
             s3.Count.Should().Be(50);

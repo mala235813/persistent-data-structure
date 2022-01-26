@@ -21,9 +21,6 @@ namespace PDS.Tests
             dict.Keys.Should().BeEmpty();
             dict.Values.Should().BeEmpty();
 
-            Action setItemOutOfRange = () => dict.SetItem(-1, 0);
-            setItemOutOfRange.Should().Throw<Exception>();
-
             UndoRedoDictionary<int, int> a = (UndoRedoDictionary<int, int>)dict.SetItem(0, 50);
             a.Count.Should().Be(1);
             a[0].Should().Be(50);

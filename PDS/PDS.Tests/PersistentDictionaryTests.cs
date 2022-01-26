@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
@@ -20,15 +21,15 @@ namespace PDS.Tests
             dict.Keys.Should().BeEmpty();
             dict.Values.Should().BeEmpty();
 
-            Action setOutOfRange = () => dict.Set(-1, 0);
-            setOutOfRange.Should().Throw<Exception>();
-
             var a = dict.Set(0, 50);
             a.Count.Should().Be(1);
 
             a.TryGetValue(0, out var val1).Should().BeTrue();
             val1.Should().Be(50);
-            
+
+            var negDict = a.Set(-1, 111);
+            negDict.Contains(-1).Should().BeTrue();
+
             a.TryGetValue(49, out _).Should().BeFalse();
 
             a.GetByKey(0).Should().Be(50);
