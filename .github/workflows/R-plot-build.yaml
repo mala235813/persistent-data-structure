@@ -1,0 +1,29 @@
+name: Render plots
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./PDS/PDS.Benchmark/
+    steps:
+      - uses: actions/checkout@v2
+      - uses: r-lib/actions/setup-r@v1
+      - name: Run bench
+        run: dotnet run --project PDS.Benchmark.csproj -c Release --filter *RangeToList*
+      - name: Render r plot file
+        run: |
+          cd ./BenchmarkDotNet.Artifacts/results/
+          Rscript BuildPlots.R *-measurements.csv
+          ls
+          pwd
+      - uses: actions/upload-artifact@v2
+        with:
+          name: plots
+          path: ${{ github.workspace }}/PDS/PDS.Benchmark/BenchmarkDotNet.Artifacts/results/*.png

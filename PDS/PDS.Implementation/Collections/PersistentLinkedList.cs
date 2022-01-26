@@ -386,12 +386,7 @@ namespace PDS.Implementation.Collections
             //
             // return new PersistentLinkedList<T>(_versionStorage, newVersion, count);
 
-            var list = this;
-            foreach (var item in items)
-            {
-                list = list.PushBack(item);
-            }
-            return list;
+            return items.Aggregate(this, (current, item) => current.PushBack(item));
         }
 
         public IPersistentLinkedList<T> AddRange(IReadOnlyCollection<T> items)

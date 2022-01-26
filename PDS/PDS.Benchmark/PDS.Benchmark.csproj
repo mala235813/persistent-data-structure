@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <OutputType>Exe</OutputType>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
+      <PackageReference Include="ImmutableLinkedList" Version="1.0.1" />
+      <PackageReference Include="TunnelVisionLabs.Collections.Trees" Version="1.0.0-alpha.74" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\PDS.Implementation\PDS.Implementation.csproj" />
+    </ItemGroup>
+
+</Project>
