@@ -58,9 +58,13 @@ Debug.Assert(stackC.Peek() == 'd' && stackB.Peek() == 'a');
 ```
 
 All examples can be found in PDS.Playground project.<br />
-![Alt Text](/resourses/demo.gif)
+![Demo](/resourses/demo.gif)
 
 ## Undo-redo
+All collections also have implementation of undo-redo mechanic to rollback changes:
+* Undo returns us to state before last modifying operation.
+* Redo returns us to state before last undo.
+* Any modifying operation clears redo stack.
 
 ## Benchmarks
 We are comparing our implementation of two sequentional collections: PersistentList and PersistentLinkedList with common C# immutable collections, [ImmutableTreeList](https://github.com/tunnelvisionlabs/dotnet-trees) and [ImmutableLinkedList](https://github.com/madelson/ImmutableLinkedList)
@@ -83,6 +87,15 @@ ImmutableList, ImmutableArray, ImmutableTreeList, ImmutableLinkedList, Persisten
 Second test is same adding, but this time we enforces collections to add items one by one.
 ![Second bench results](/resourses/second.png)
 ImmutableList, ImmutableArray, ImmutableTreeList, ImmutableLinkedList, PersistentLinkedList, PersistentList
+
+|               Method |  Count |         Mean |         Error |       StdDev |    Ratio | RatioSD |
+|--------------------- |------- |-------------:|--------------:|-------------:|---------:|--------:|
+|        ImmutableList | 100000 |     49.86 ms |     20.387 ms |     1.117 ms |     1.00 |    0.00 |
+|       ImmutableArray | 100000 |  2,084.60 ms |  1,024.015 ms |    56.130 ms |    41.83 |    1.84 |
+|    ImmutableTreeList | 100000 |     67.44 ms |      6.518 ms |     0.357 ms |     1.35 |    0.04 |
+|  ImmutableLinkedList | 100000 | 70,299.05 ms | 20,021.392 ms | 1,097.440 ms | 1,410.46 |   41.46 |
+| PersistentLinkedList | 100000 |     95.66 ms |     55.313 ms |     3.032 ms |     1.92 |    0.07 |
+|       PersistentList | 100000 |     10.33 ms |     21.709 ms |     1.190 ms |     0.21 |    0.02 |
 
 ## Authors
  - [Andrey Pleshkov](https://github.com/6gales)
