@@ -4,6 +4,7 @@
         <TargetFramework>net6.0</TargetFramework>
         <RootNamespace>PDS.Implementation</RootNamespace>
         <Nullable>enable</Nullable>
+        <NoWarn>8601,8604</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
