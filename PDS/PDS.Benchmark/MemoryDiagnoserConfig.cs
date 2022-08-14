@@ -7,7 +7,7 @@ namespace PDS.Benchmark
     {
         public MemoryDiagnoserConfig()
         {
-            Add(MemoryDiagnoser.Default);
+            AddDiagnoser(MemoryDiagnoser.Default);
         }
     }
 }
